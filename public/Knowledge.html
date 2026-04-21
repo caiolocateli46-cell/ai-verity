@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI VERITY — Base de Conhecimento</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg0: #0c0c0e; --bg1: #111114; --bg2: #18181c; --bg3: #202025;
+            --bd: #28282e; --bd2: #323238;
+            --tx: #e6e6eb; --tx2: #8f8f9d; --tx3: #4a4a58;
+            --accent: #4f7df3; --adim: rgba(79,125,243,.13);
+            --green: #3ecf8e; --gdim: rgba(62,207,142,.12);
+            --red: #f97066; --rdim: rgba(249,112,102,.12);
+            --ff: 'Inter', sans-serif; --fh: 'Syne', sans-serif; --fm: 'IBM Plex Mono', monospace;
+            --rad: 10px;
+        }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:var(--ff); background:var(--bg0); color:var(--tx); font-size:14px; line-height:1.6; min-height:100vh; -webkit-font-smoothing:antialiased; }
+        a { color:var(--accent); text-decoration:none; }
+        a:hover { text-decoration:underline; }
+        button { cursor:pointer; font-family:var(--ff); }
+        input, textarea, select { font-family:var(--ff); }
+
+        /* Layout */
+        .page { max-width: 860px; margin: 0 auto; padding: 32px 20px 60px; }
+
+        /* Header */
+        .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; flex-wrap:wrap; gap:12px; }
+        .page-title { font-family:var(--fh); font-size:22px; font-weight:800; letter-spacing:2px; display:flex; align-items:center; gap:10px; }
+        .back-link { font-size:13px; color:var(--tx2); display:flex; align-items:center; gap:6px; }
+        .back-link:hover { color:var(--tx); }
+
+        /* Stats bar */
+        .stats-bar { display:flex; gap:12px; margin-bottom:28px; flex-wrap:wrap; }
+        .stat-card { background:var(--bg2); border:1px solid var(--bd); border-radius:var(--rad); padding:14px 20px; flex:1; min-width:120px; }
+        .stat-card .num { font-family:var(--fh); font-size:24px; font-weight:700; }
+        .stat-card .num.green { color:var(--green); }
+        .stat-card .num.red   { color:var(--red); }
+        .stat-card .lbl { font-size:11px; color:var(--tx3); margin-top:2px; letter-spacing:.5px; }
+
+        /* Form */
+        .form-card { background:var(--bg1); border:1px solid var(--bd); border-radius:14px; padding:24px; margin-bottom:28px; }
+        .form-card h2 { font-family:var(--fh); font-size:15px; font-weight:700; margin-bottom:18px; color:var(--tx); }
+        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+        .form-full { grid-column:1/-1; }
+        .form-group { display:flex; flex-direction:column; gap:6px; }
+        .form-label { font-size:11px; font-weight:600; letter-spacing:.8px; color:var(--tx3); }
+        .form-input, .form-select, .form-textarea {
+            background:var(--bg2); border:1px solid var(--bd2); border-radius:8px;
+            color:var(--tx); padding:9px 12px; font-size:13.5px;
+            transition:border-color .15s, box-shadow .15s; outline:none;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color:var(--accent);
+            box-shadow:0 0 0 3px rgba(79,125,243,.18);
+        }
+        .form-textarea { resize:vertical; min-height:80px; }
+        .form-select option { background:var(--bg2); }
+        .btn-primary {
+            background:var(--accent); color:#fff; border:none;
+            padding:10px 22px; border-radius:9px; font-size:13.5px; font-weight:500;
+            transition:all .15s;
+        }
+        .btn-primary:hover { background:#3d6bdf; transform:scale(1.02); }
+        .btn-primary:active { transform:scale(.97); }
+        .btn-primary:disabled { background:var(--bg3); cursor:not-allowed; transform:none; }
+        .form-actions { display:flex; align-items:center; gap:12px; margin-top:18px; }
+        .form-msg { font-size:13px; display:none; }
+        .form-msg.ok  { color:var(--green); }
+        .form-msg.err { color:var(--red); }
+
+        /* Filtros */
+        .filters { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+        .filter-input {
+            flex:1; min-width:180px;
+            background:var(--bg2); border:1px solid var(--bd); border-radius:8px;
+            color:var(--tx); padding:8px 12px; font-size:13px; outline:none;
+        }
+        .filter-input:focus { border-color:var(--accent); }
+        .filter-select {
+            background:var(--bg2); border:1px solid var(--bd); border-radius:8px;
+            color:var(--tx2); padding:8px 12px; font-size:13px; outline:none;
+        }
+
+        /* Tabela de fatos */
+        .facts-section h2 { font-family:var(--fh); font-size:15px; font-weight:700; margin-bottom:14px; }
+        .facts-list { display:flex; flex-direction:column; gap:8px; }
+        .fact-card {
+            background:var(--bg1); border:1px solid var(--bd);
+            border-radius:var(--rad); padding:14px 16px;
+            display:grid; grid-template-columns:1fr auto; gap:10px;
+            align-items:start;
+            transition:border-color .15s;
+        }
+        .fact-card:hover { border-color:var(--bd2); }
+        .fact-card.real  { border-left:3px solid var(--green); }
+        .fact-card.falso { border-left:3px solid var(--red); }
+        .fact-main { min-width:0; }
+        .fact-topico { font-size:10px; font-weight:600; letter-spacing:1px; color:var(--tx3); margin-bottom:4px; }
+        .fact-fato { font-size:13.5px; color:var(--tx); margin-bottom:6px; overflow-wrap:break-word; }
+        .fact-exp { font-size:12.5px; color:var(--tx2); line-height:1.5; }
+        .fact-fonte { font-size:11px; color:var(--tx3); font-family:var(--fm); margin-top:4px; }
+        .fact-meta { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+        .badge {
+            font-size:10px; font-weight:700; padding:3px 9px;
+            border-radius:5px; letter-spacing:.5px;
+        }
+        .badge.real  { background:var(--gdim); color:var(--green); border:1px solid rgba(62,207,142,.25); }
+        .badge.falso { background:var(--rdim); color:var(--red);   border:1px solid rgba(249,112,102,.25); }
+        .btn-delete {
+            width:28px; height:28px;
+            background:transparent; border:1px solid var(--bd); border-radius:7px;
+            color:var(--tx3); display:flex; align-items:center; justify-content:center;
+            transition:all .15s;
+        }
+        .btn-delete:hover { background:var(--rdim); color:var(--red); border-color:var(--red); }
+        .fact-date { font-size:10px; color:var(--tx3); font-family:var(--fm); }
+
+        .empty-state { text-align:center; padding:40px 20px; color:var(--tx3); font-size:13px; }
+
+        /* Toast */
+        .toast {
+            position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(10px);
+            background:var(--bg3); border:1px solid var(--bd2); color:var(--tx);
+            padding:10px 20px; border-radius:10px; font-size:13px;
+            box-shadow:0 8px 24px rgba(0,0,0,.4); opacity:0;
+            transition:all .25s; pointer-events:none; z-index:100; white-space:nowrap;
+        }
+        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+        @media (max-width:600px) {
+            .form-grid { grid-template-columns:1fr; }
+            .form-full { grid-column:1; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <div class="page-header">
+        <div class="page-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                      stroke="#4f7df3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Base de Conhecimento
+        </div>
+        <a href="/" class="back-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Voltar ao chat
+        </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar" id="statsBar">
+        <div class="stat-card"><div class="num" id="sTotal">—</div><div class="lbl">TOTAL DE FATOS</div></div>
+        <div class="stat-card"><div class="num green" id="sReal">—</div><div class="lbl">VERDADEIROS</div></div>
+        <div class="stat-card"><div class="num red" id="sFalso">—</div><div class="lbl">FALSOS</div></div>
+    </div>
+
+    <!-- Formulário -->
+    <div class="form-card">
+        <h2>➕ Adicionar novo fato verificado</h2>
+        <div class="form-grid" id="addForm">
+            <div class="form-group">
+                <label class="form-label">TÓPICO <span style="color:var(--tx3)">(categoria)</span></label>
+                <input class="form-input" id="fTopico" placeholder="Ex: Política, Saúde, Ciência...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">VEREDICTO *</label>
+                <select class="form-select" id="fVeredicto">
+                    <option value="REAL">✓ REAL — É verdade</option>
+                    <option value="FALSO">✗ FALSO — É mentira</option>
+                </select>
+            </div>
+            <div class="form-group form-full">
+                <label class="form-label">AFIRMAÇÃO / FATO *</label>
+                <input class="form-input" id="fFato" placeholder="Ex: Lula foi eleito presidente do Brasil em 2022.">
+            </div>
+            <div class="form-group form-full">
+                <label class="form-label">EXPLICAÇÃO <span style="color:var(--tx3)">(opcional mas recomendado)</span></label>
+                <textarea class="form-textarea" id="fExplicacao" placeholder="Contexto adicional que ajuda os agentes a entender melhor..."></textarea>
+            </div>
+            <div class="form-group form-full">
+                <label class="form-label">FONTE <span style="color:var(--tx3)">(URL ou nome da fonte)</span></label>
+                <input class="form-input" id="fFonte" placeholder="Ex: https://g1.globo.com/... ou TSE, OMS, IBGE...">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="btn-primary" id="addBtn">Salvar fato</button>
+            <span class="form-msg" id="formMsg"></span>
+        </div>
+    </div>
+
+    <!-- Lista de fatos -->
+    <div class="facts-section">
+        <h2>📚 Fatos cadastrados</h2>
+
+        <div class="filters">
+            <input class="filter-input" id="searchInput" placeholder="Buscar fato...">
+            <select class="filter-select" id="filterVeredicto">
+                <option value="">Todos</option>
+                <option value="REAL">✓ REAL</option>
+                <option value="FALSO">✗ FALSO</option>
+            </select>
+        </div>
+
+        <div class="facts-list" id="factsList">
+            <div class="empty-state">Carregando...</div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let allFacts = [];
+
+async function loadFacts() {
+    try {
+        const res  = await fetch('/api/knowledge');
+        allFacts   = await res.json();
+        updateStats();
+        renderFacts();
+    } catch {
+        document.getElementById('factsList').innerHTML =
+            '<div class="empty-state">Erro ao carregar fatos.</div>';
+    }
+}
+
+function updateStats() {
+    const total = allFacts.length;
+    const real  = allFacts.filter(f => f.veredicto === 'REAL').length;
+    document.getElementById('sTotal').textContent = total;
+    document.getElementById('sReal').textContent  = real;
+    document.getElementById('sFalso').textContent = total - real;
+}
+
+function renderFacts() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const filter = document.getElementById('filterVeredicto').value;
+
+    const filtered = allFacts.filter(f => {
+        const matchSearch = !search ||
+            (f.fato||'').toLowerCase().includes(search) ||
+            (f.topico||'').toLowerCase().includes(search) ||
+            (f.explicacao||'').toLowerCase().includes(search);
+        const matchFilter = !filter || f.veredicto === filter;
+        return matchSearch && matchFilter;
+    });
+
+    if (!filtered.length) {
+        document.getElementById('factsList').innerHTML =
+            '<div class="empty-state">Nenhum fato encontrado.</div>';
+        return;
+    }
+
+    document.getElementById('factsList').innerHTML = filtered.map(f => {
+        const cls  = f.veredicto === 'REAL' ? 'real' : 'falso';
+        const date = f.criado_em ? f.criado_em.slice(0,10) : '';
+        return `
+        <div class="fact-card ${cls}" data-id="${f.id}">
+            <div class="fact-main">
+                ${f.topico ? `<div class="fact-topico">${esc(f.topico)}</div>` : ''}
+                <div class="fact-fato">${esc(f.fato)}</div>
+                ${f.explicacao ? `<div class="fact-exp">${esc(f.explicacao)}</div>` : ''}
+                ${f.fonte ? `<div class="fact-fonte">📎 ${esc(f.fonte)}</div>` : ''}
+            </div>
+            <div class="fact-meta">
+                <span class="badge ${cls}">${f.veredicto}</span>
+                <span class="fact-date">${date}</span>
+                <button class="btn-delete" onclick="deleteFact(${f.id})" title="Remover">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                        <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+async function deleteFact(id) {
+    if (!confirm('Remover este fato?')) return;
+    try {
+        await fetch(`/api/knowledge/${id}`, { method: 'DELETE' });
+        allFacts = allFacts.filter(f => f.id !== id);
+        updateStats();
+        renderFacts();
+        showToast('🗑️ Fato removido.');
+    } catch {
+        showToast('❌ Erro ao remover.');
+    }
+}
+
+document.getElementById('addBtn').addEventListener('click', async () => {
+    const btn  = document.getElementById('addBtn');
+    const msg  = document.getElementById('formMsg');
+    const fato = document.getElementById('fFato').value.trim();
+
+    if (!fato) { showFormMsg('Informe o fato/afirmação.', false); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Salvando...';
+
+    try {
+        const res = await fetch('/api/knowledge', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                topico:     document.getElementById('fTopico').value.trim() || null,
+                fato,
+                veredicto:  document.getElementById('fVeredicto').value,
+                explicacao: document.getElementById('fExplicacao').value.trim() || null,
+                fonte:      document.getElementById('fFonte').value.trim() || null
+            })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.erro);
+
+        showFormMsg('✓ Fato salvo com sucesso!', true);
+        // Limpa campos
+        ['fTopico','fFato','fExplicacao','fFonte'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('fVeredicto').value = 'REAL';
+        await loadFacts();
+    } catch (err) {
+        showFormMsg('Erro: ' + err.message, false);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Salvar fato';
+    }
+});
+
+function showFormMsg(text, ok) {
+    const el = document.getElementById('formMsg');
+    el.textContent = text;
+    el.className = 'form-msg ' + (ok ? 'ok' : 'err');
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 3500);
+}
+
+document.getElementById('searchInput').addEventListener('input', renderFacts);
+document.getElementById('filterVeredicto').addEventListener('change', renderFacts);
+
+function esc(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let toastTimer;
+function showToast(msg) {
+    clearTimeout(toastTimer);
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+loadFacts();
+</script>
+</body>
+</html>
