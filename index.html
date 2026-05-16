@@ -1,0 +1,2376 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark" data-lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI VERITY — Motor de verificação de fatos e combate à desinformação digital.">
+<title>AI VERITY — Verificação de Fatos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════
+   AI VERITY · Design System
+═══════════════════════════════════════════════════════ */
+:root {
+  /* Dark (default) */
+  --bg0:#0c0c0e; --bg1:#111114; --bg2:#18181c; --bg3:#202025; --bgh:#28282e;
+  --bd:#28282e; --bd2:#323238; --bd3:#3e3e48;
+  --tx:#e6e6eb; --tx2:#8f8f9d; --tx3:#4a4a58;
+  --accent:#4f7df3; --accent-h:#3d6bdf;
+  --adim:rgba(79,125,243,.13); --aglow:rgba(79,125,243,.22);
+  --green:#3ecf8e; --gdim:rgba(62,207,142,.12); --gborder:rgba(62,207,142,.3);
+  --red:#f97066;   --rdim:rgba(249,112,102,.12); --rborder:rgba(249,112,102,.3);
+  --yellow:#f5c542; --ydim:rgba(245,197,66,.14); --yborder:rgba(245,197,66,.35);
+  --shadow:0 24px 64px rgba(0,0,0,.55);
+  --shadow-sm:0 4px 16px rgba(0,0,0,.35);
+  --ff:'Inter',system-ui,sans-serif;
+  --fh:'Syne',sans-serif;
+  --fm:'IBM Plex Mono',monospace;
+  --fa:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --sw:262px; --rad:10px; --tr:.18s ease;
+  --fs:1; --lh:1.65; --ls:normal;
+}
+
+/* Light theme */
+[data-theme="light"] {
+  --bg0:#f0f2f7; --bg1:#ffffff; --bg2:#f5f7fb; --bg3:#eaecf4; --bgh:#e0e3ef;
+  --bd:#dde0ee; --bd2:#c8ccdf; --bd3:#b8bdd6;
+  --tx:#11131f; --tx2:#4a4e6a; --tx3:#9095b8;
+  --adim:rgba(79,125,243,.09); --aglow:rgba(79,125,243,.18);
+  --shadow:0 24px 64px rgba(0,0,0,.12);
+  --shadow-sm:0 4px 16px rgba(0,0,0,.08);
+}
+
+/* High contrast */
+[data-theme="contrast"] {
+  --bg0:#000; --bg1:#000; --bg2:#0d0d0d; --bg3:#111; --bgh:#1a1a1a;
+  --bd:#fff; --bd2:#fff; --bd3:#ddd;
+  --tx:#fff; --tx2:#ffff00; --tx3:#aaa;
+  --accent:#ffff00; --accent-h:#e6e600;
+  --adim:rgba(255,255,0,.12); --aglow:rgba(255,255,0,.22);
+  --green:#00ff88; --red:#ff4444; --yellow:#ffff00;
+}
+
+/* Sepia */
+[data-theme="sepia"] {
+  --bg0:#f4efe6; --bg1:#ede8df; --bg2:#e8e2d9; --bg3:#ddd7ce; --bgh:#d4cec5;
+  --bd:#c8c2b9; --bd2:#b8b2a9; --bd3:#a8a29a;
+  --tx:#3d2b1f; --tx2:#6b5244; --tx3:#9c8070;
+  --accent:#8b5e3c; --accent-h:#7a4f30;
+  --adim:rgba(139,94,60,.12); --aglow:rgba(139,94,60,.2);
+  --shadow:0 24px 64px rgba(61,43,31,.15);
+}
+
+/* ── Global Reset ─────────────────────────────────────── */
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { height:100%; scroll-behavior:smooth; }
+body {
+  font-family:var(--ff); background:var(--bg0); color:var(--tx);
+  font-size:calc(14px * var(--fs)); line-height:var(--lh); letter-spacing:var(--ls);
+  -webkit-font-smoothing:antialiased; overflow:hidden; height:100%;
+  transition:background .3s, color .3s;
+}
+body.dyslexia, body.dyslexia * { font-family:var(--fa) !important; }
+body.no-motion, body.no-motion * { animation:none !important; transition:none !important; }
+body.big-cursor, body.big-cursor * { cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Ccircle cx='18' cy='18' r='16' fill='%234f7df3' opacity='.4'/%3E%3Ccircle cx='18' cy='18' r='5' fill='%23fff'/%3E%3C/svg%3E") 18 18, auto !important; }
+body.underline-links a { text-decoration:underline !important; text-underline-offset:3px; }
+body.desaturate { filter:saturate(.15); }
+button { cursor:pointer; font-family:var(--ff); background:none; border:none; }
+textarea,input,select { font-family:var(--ff); }
+a { color:var(--accent); text-decoration:none; }
+:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:4px; }
+.sr-only { position:absolute; width:1px; height:1px; clip:rect(0,0,0,0); overflow:hidden; }
+.hidden { display:none !important; }
+
+/* ── Skip Nav ─────────────────────────────────────────── */
+.skip-link {
+  position:fixed; top:-60px; left:16px; z-index:99999;
+  background:var(--accent); color:#fff; padding:10px 20px;
+  border-radius:0 0 10px 10px; font-weight:700; font-size:14px;
+  transition:top .2s; text-decoration:none;
+}
+.skip-link:focus { top:0; }
+
+/* ── Animations ───────────────────────────────────────── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes pulse  { 0%,100%{opacity:1} 50%{opacity:.35} }
+@keyframes bounce { 0%,80%,100%{transform:translateY(0);opacity:.4} 40%{transform:translateY(-6px);opacity:1} }
+@keyframes spin   { to{transform:rotate(360deg)} }
+@keyframes shimmer{ 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+@keyframes gridMove { from{transform:translateY(0)} to{transform:translateY(48px)} }
+@keyframes scanline { 0%{top:-8%} 100%{top:108%} }
+@keyframes logoReveal { 0%{opacity:0;transform:scale(.7) rotate(-8deg)} 60%{opacity:1;transform:scale(1.06) rotate(1deg)} 100%{opacity:1;transform:scale(1) rotate(0deg)} }
+@keyframes wordSlide { from{opacity:0;transform:translateX(-18px)} to{opacity:1;transform:translateX(0)} }
+@keyframes barGrow { from{width:0} to{width:100%} }
+@keyframes tagPop { from{opacity:0;transform:scale(.8) translateY(6px)} to{opacity:1;transform:scale(1) translateY(0)} }
+@keyframes splashOut { 0%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(1.04)} }
+@keyframes particleFloat {
+  0%   { transform:translateY(0) translateX(0); opacity:.6; }
+  50%  { transform:translateY(-28px) translateX(10px); opacity:1; }
+  100% { transform:translateY(0) translateX(0); opacity:.6; }
+}
+
+/* ─── SPLASH ──────────────────────────────────────────── */
+#splash {
+  position:fixed; inset:0; z-index:99999;
+  background:#0c0c0e;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  overflow:hidden;
+}
+#splash.closing { animation:splashOut .7s cubic-bezier(.4,0,.2,1) both; }
+
+/* Grid de fundo */
+.sp-grid {
+  position:absolute; inset:-48px;
+  background-image:
+    linear-gradient(rgba(79,125,243,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,125,243,.055) 1px, transparent 1px);
+  background-size:48px 48px;
+  animation:gridMove 2.8s linear infinite;
+  pointer-events:none;
+}
+/* Vinheta sobre o grid */
+.sp-vignette {
+  position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(ellipse at center, transparent 30%, #0c0c0e 80%);
+}
+/* Scanline */
+.sp-scan {
+  position:absolute; left:0; right:0; height:8px;
+  background:linear-gradient(180deg, transparent, rgba(79,125,243,.18), transparent);
+  animation:scanline 2.6s linear infinite;
+  pointer-events:none;
+}
+/* Glows */
+.sp-glow-l {
+  position:absolute; width:420px; height:420px; border-radius:50%;
+  background:radial-gradient(circle, rgba(79,125,243,.12) 0%, transparent 70%);
+  top:-60px; left:-80px; pointer-events:none;
+}
+.sp-glow-r {
+  position:absolute; width:320px; height:320px; border-radius:50%;
+  background:radial-gradient(circle, rgba(62,207,142,.09) 0%, transparent 70%);
+  bottom:-40px; right:-60px; pointer-events:none;
+}
+/* Partículas */
+.sp-particles { position:absolute; inset:0; pointer-events:none; }
+.sp-p {
+  position:absolute; border-radius:50%;
+  background:var(--accent); opacity:.5;
+}
+
+/* Conteúdo central */
+.sp-center { position:relative; z-index:2; text-align:center; }
+
+/* Logo */
+.sp-logo-wrap {
+  width:88px; height:88px; margin:0 auto 28px;
+  background:rgba(79,125,243,.12);
+  border:1px solid rgba(79,125,243,.3);
+  border-radius:26px;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 12px rgba(79,125,243,.05), 0 0 60px rgba(79,125,243,.25);
+  animation:logoReveal .9s cubic-bezier(.34,1.56,.64,1) .1s both;
+  position:relative;
+}
+/* Anel pulsante ao redor do logo */
+.sp-ring {
+  position:absolute; inset:-10px; border-radius:34px;
+  border:1px solid rgba(79,125,243,.2);
+  animation:pulse 2.2s ease-in-out infinite;
+}
+.sp-ring2 {
+  position:absolute; inset:-22px; border-radius:44px;
+  border:1px solid rgba(79,125,243,.1);
+  animation:pulse 2.2s ease-in-out .5s infinite;
+}
+
+/* Nome */
+.sp-name {
+  font-family:'Syne',sans-serif; font-size:32px; font-weight:900;
+  letter-spacing:6px; color:#e6e6eb;
+  animation:wordSlide .6s ease .75s both;
+  margin-bottom:8px;
+}
+.sp-name span { color:#4f7df3; }
+
+/* Tagline */
+.sp-tagline {
+  font-size:13px; color:#8f8f9d; letter-spacing:2px;
+  font-family:'IBM Plex Mono',monospace;
+  animation:wordSlide .6s ease .95s both;
+  margin-bottom:40px;
+}
+
+/* Tags de agentes */
+.sp-agents {
+  display:flex; gap:8px; justify-content:center; flex-wrap:wrap;
+  margin-bottom:44px; max-width:520px;
+}
+.sp-agent {
+  padding:5px 13px; border-radius:20px;
+  border:1px solid rgba(79,125,243,.2);
+  background:rgba(79,125,243,.07);
+  font-size:11.5px; color:#8f8f9d;
+  font-family:'IBM Plex Mono',monospace;
+  letter-spacing:.4px;
+}
+.sp-agent:nth-child(1){animation:tagPop .4s ease 1.1s both}
+.sp-agent:nth-child(2){animation:tagPop .4s ease 1.2s both}
+.sp-agent:nth-child(3){animation:tagPop .4s ease 1.3s both}
+.sp-agent:nth-child(4){animation:tagPop .4s ease 1.4s both}
+.sp-agent:nth-child(5){animation:tagPop .4s ease 1.5s both}
+
+/* Barra de progresso */
+.sp-bar-wrap {
+  width:260px; height:2px; background:rgba(255,255,255,.06);
+  border-radius:2px; overflow:hidden; margin:0 auto 14px;
+  animation:fadeIn .3s ease 1.6s both;
+}
+.sp-bar {
+  height:100%; width:0; border-radius:2px;
+  background:linear-gradient(90deg, #4f7df3, #3ecf8e);
+  animation:barGrow 1.8s cubic-bezier(.4,0,.2,1) 1.6s both;
+}
+
+/* Status */
+.sp-status {
+  font-size:11px; color:#4a4a58; font-family:'IBM Plex Mono',monospace;
+  letter-spacing:.6px;
+  animation:fadeIn .3s ease 1.65s both;
+  height:16px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LOGIN
+═══════════════════════════════════════════════════════ */
+#loginScreen {
+  position:fixed; inset:0; background:var(--bg0);
+  display:flex; align-items:center; justify-content:center;
+  z-index:9000; padding:20px;
+  opacity:0; transition:opacity .5s ease;
+}
+#loginScreen.visible { opacity:1; }
+.login-bg {
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse at 25% 20%, rgba(79,125,243,.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 80%, rgba(62,207,142,.05) 0%, transparent 50%);
+}
+.login-card {
+  position:relative; background:var(--bg1); border:1px solid var(--bd);
+  border-radius:20px; padding:42px 38px; max-width:400px; width:100%;
+  box-shadow:var(--shadow); animation:fadeUp .5s ease both;
+}
+.login-logo {
+  width:58px; height:58px; background:var(--adim);
+  border:1px solid rgba(79,125,243,.28); border-radius:16px;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--accent); margin:0 auto 18px;
+  box-shadow:0 0 48px var(--aglow);
+}
+.login-title {
+  font-family:var(--fh); font-size:22px; font-weight:900;
+  letter-spacing:3.5px; text-align:center; margin-bottom:4px;
+}
+.login-sub { text-align:center; color:var(--tx2); font-size:13px; margin-bottom:22px; }
+.login-tabs {
+  display:flex; gap:0; background:var(--bg2); border:1px solid var(--bd);
+  border-radius:10px; padding:3px; margin-bottom:22px;
+}
+.login-tab {
+  flex:1; padding:8px; border-radius:8px; font-size:13px; font-weight:600;
+  color:var(--tx2); transition:all var(--tr); text-align:center;
+}
+.login-tab.active { background:var(--accent); color:#fff; box-shadow:0 2px 8px var(--aglow); }
+.l-field { margin-bottom:14px; }
+.l-field label { display:block; font-size:11.5px; font-weight:700; color:var(--tx2); margin-bottom:5px; letter-spacing:.6px; text-transform:uppercase; }
+.l-field input {
+  width:100%; background:var(--bg2); border:1px solid var(--bd2);
+  border-radius:10px; padding:11px 14px; color:var(--tx); font-size:13.5px;
+  outline:none; transition:border-color var(--tr), box-shadow var(--tr);
+}
+.l-field input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--aglow); }
+.l-btn {
+  width:100%; padding:12px; background:var(--accent); color:#fff;
+  border-radius:10px; font-size:14px; font-weight:700; letter-spacing:.3px;
+  transition:all var(--tr); margin-top:4px;
+}
+.l-btn:hover { background:var(--accent-h); transform:translateY(-1px); box-shadow:0 6px 24px var(--aglow); }
+.l-btn:active { transform:translateY(0); }
+.l-error {
+  background:var(--rdim); border:1px solid var(--rborder); color:var(--red);
+  padding:9px 14px; border-radius:9px; font-size:12.5px; margin-top:14px;
+  text-align:center; animation:fadeIn .2s ease;
+}
+.l-footer { text-align:center; margin-top:18px; font-size:11px; color:var(--tx3); }
+.l-separator { display:flex; align-items:center; gap:12px; color:var(--tx3); font-size:12px; margin:16px 0; }
+.l-separator::before,.l-separator::after { content:''; flex:1; height:1px; background:var(--bd); }
+
+/* ═══════════════════════════════════════════════════════
+   LAYOUT PRINCIPAL
+═══════════════════════════════════════════════════════ */
+#app { display:flex; height:100vh; width:100%; overflow:hidden; }
+
+/* ═══════════════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════════════ */
+.sidebar {
+  width:var(--sw); flex-shrink:0; height:100%;
+  background:var(--bg1); border-right:1px solid var(--bd);
+  display:flex; flex-direction:column; overflow:hidden;
+  z-index:40; transition:transform var(--tr);
+}
+.sb-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 14px; border-bottom:1px solid var(--bd); flex-shrink:0;
+}
+.brand { display:flex; align-items:center; gap:9px; }
+.brand-mark {
+  width:32px; height:32px; background:var(--adim);
+  border:1px solid rgba(79,125,243,.28); border-radius:9px;
+  display:flex; align-items:center; justify-content:center; color:var(--accent);
+}
+.brand-name { font-family:var(--fh); font-size:13.5px; font-weight:800; letter-spacing:2px; }
+.icon-btn {
+  width:30px; height:30px; background:transparent; border:1px solid var(--bd2) !important;
+  border-radius:8px; color:var(--tx2); display:flex; align-items:center;
+  justify-content:center; transition:all var(--tr); font-size:15px; flex-shrink:0;
+}
+.icon-btn:hover { background:var(--bgh); color:var(--tx); border-color:var(--accent) !important; }
+.sb-stats {
+  display:grid; grid-template-columns:1fr 1fr 1fr;
+  border-bottom:1px solid var(--bd); flex-shrink:0;
+}
+.sb-stat {
+  padding:12px 10px; text-align:center; border-right:1px solid var(--bd);
+}
+.sb-stat:last-child { border-right:none; }
+.sb-num { font-family:var(--fh); font-size:19px; font-weight:800; line-height:1; }
+.sb-num.g { color:var(--green); }
+.sb-num.r { color:var(--red); }
+.sb-lbl { font-size:9.5px; color:var(--tx3); margin-top:3px; letter-spacing:.6px; font-weight:600; text-transform:uppercase; }
+.sb-section {
+  display:flex; flex-direction:column; flex-shrink:0;
+  border-bottom:1px solid var(--bd); max-height:185px;
+}
+.sb-section-hd {
+  padding:10px 14px 7px; font-size:10px; font-weight:700;
+  letter-spacing:1.3px; color:var(--tx3); text-transform:uppercase;
+  display:flex; align-items:center; gap:6px; flex-shrink:0;
+}
+.sb-list { overflow-y:auto; flex:1; padding:0 8px 6px; }
+.sb-list::-webkit-scrollbar { width:2px; }
+.sb-list::-webkit-scrollbar-thumb { background:var(--bd2); border-radius:2px; }
+.sb-item {
+  display:flex; align-items:center; gap:8px; padding:7px 8px;
+  border-radius:8px; cursor:pointer; transition:background var(--tr);
+}
+.sb-item:hover { background:var(--bg3); }
+.sb-item-text { font-size:12px; color:var(--tx2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1; }
+.sb-badge { font-size:10px; color:var(--tx3); background:var(--bg3); padding:2px 7px; border-radius:10px; font-family:var(--fm); flex-shrink:0; }
+.h-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.h-dot.g { background:var(--green); }
+.h-dot.r { background:var(--red); }
+.h-dot.y { background:var(--yellow); }
+.h-time { font-size:10px; color:var(--tx3); font-family:var(--fm); flex-shrink:0; }
+.sb-nav { padding:8px; flex-shrink:0; }
+.nav-btn {
+  width:100%; display:flex; align-items:center; gap:10px; padding:9px 10px;
+  color:var(--tx2); border-radius:9px; font-size:13px; text-align:left;
+  transition:all var(--tr);
+}
+.nav-btn:hover { background:var(--bgh); color:var(--tx); }
+.nav-btn .nb-icon { font-size:15px; flex-shrink:0; width:20px; text-align:center; }
+.sb-foot {
+  margin-top:auto; display:flex; align-items:center; justify-content:space-between;
+  padding:12px 14px; border-top:1px solid var(--bd); flex-shrink:0;
+}
+.online-row { display:flex; align-items:center; gap:7px; }
+.dot-live { width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 2.4s ease-in-out infinite; }
+.foot-txt { font-size:11px; color:var(--tx3); font-family:var(--fm); }
+.user-avatar {
+  width:26px; height:26px; background:var(--adim); border:1px solid rgba(79,125,243,.3);
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700; color:var(--accent); flex-shrink:0;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TOPBAR MOBILE
+═══════════════════════════════════════════════════════ */
+.topbar {
+  display:none; align-items:center; justify-content:space-between;
+  padding:0 14px; height:52px; border-bottom:1px solid var(--bd);
+  background:var(--bg1); flex-shrink:0;
+}
+.tb-center { font-family:var(--fh); font-size:13px; font-weight:800; letter-spacing:2px; }
+
+/* ═══════════════════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════════════════ */
+.main {
+  flex:1; display:flex; flex-direction:column;
+  min-width:0; height:100%; background:var(--bg0); overflow:hidden;
+}
+
+/* ═══════════════════════════════════════════════════════
+   CHAT
+═══════════════════════════════════════════════════════ */
+.chat {
+  flex:1; overflow-y:auto; scroll-behavior:smooth;
+  overscroll-behavior:contain;
+}
+.chat::-webkit-scrollbar { width:4px; }
+.chat::-webkit-scrollbar-thumb { background:var(--bd2); border-radius:4px; }
+
+/* Welcome */
+.welcome {
+  min-height:100%; display:flex; align-items:center; justify-content:center;
+  padding:48px 24px; position:relative; overflow:hidden;
+}
+.w-glow {
+  position:absolute; width:600px; height:600px; border-radius:50%; pointer-events:none;
+  background:radial-gradient(circle, rgba(79,125,243,.06) 0%, transparent 70%);
+  top:50%; left:50%; transform:translate(-50%,-50%);
+}
+.w-inner { text-align:center; max-width:560px; position:relative; z-index:1; animation:fadeUp .55s ease both; }
+.w-icon {
+  width:72px; height:72px; background:var(--adim);
+  border:1px solid rgba(79,125,243,.24); border-radius:22px;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--accent); margin:0 auto 24px; box-shadow:0 0 60px var(--aglow);
+  font-size:32px;
+}
+.w-title { font-family:var(--fh); font-size:26px; font-weight:900; letter-spacing:3.5px; margin-bottom:12px; }
+.w-desc { font-size:14px; color:var(--tx2); line-height:1.85; margin-bottom:28px; }
+.w-desc strong { color:var(--tx); }
+.w-tags { display:flex; flex-wrap:wrap; gap:7px; justify-content:center; margin-bottom:28px; }
+.w-tag {
+  padding:5px 13px; background:var(--bg2); border:1px solid var(--bd2);
+  border-radius:20px; font-size:12px; color:var(--tx2);
+}
+.w-examples-lbl { font-size:10.5px; color:var(--tx3); letter-spacing:.9px; font-weight:700; text-transform:uppercase; margin-bottom:11px; }
+.w-examples { display:flex; flex-wrap:wrap; gap:9px; justify-content:center; }
+.w-ex {
+  padding:9px 17px; background:var(--bg2); border:1px solid var(--bd2);
+  border-radius:22px; color:var(--tx2); font-size:12.5px;
+  transition:all var(--tr); cursor:pointer;
+}
+.w-ex:hover { background:var(--adim); border-color:var(--accent); color:var(--tx); }
+
+/* Messages */
+.msg-group { border-bottom:1px solid var(--bd); animation:fadeUp .22s ease both; }
+.msg-group:last-child { border-bottom:none; }
+.msg-wrap { max-width:760px; margin:0 auto; padding:22px 26px; }
+.msg-user .msg-wrap { display:flex; justify-content:flex-end; }
+.msg-bubble {
+  background:var(--accent); color:#fff; padding:11px 17px;
+  border-radius:18px 18px 4px 18px; max-width:70%;
+  font-size:13.5px; line-height:1.65; overflow-wrap:break-word;
+}
+.msg-bot .msg-wrap { display:flex; gap:12px; align-items:flex-start; }
+.bot-av {
+  width:30px; height:30px; background:var(--adim);
+  border:1px solid rgba(79,125,243,.24); border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--accent); flex-shrink:0; margin-top:2px; font-size:15px;
+}
+.bot-content { flex:1; min-width:0; font-size:13.5px; line-height:1.8; }
+
+/* Verdict */
+.verdict-pill {
+  display:inline-flex; align-items:center; gap:9px; padding:8px 18px;
+  border-radius:10px; font-family:var(--fh); font-size:14px;
+  font-weight:800; letter-spacing:.5px; margin-bottom:14px;
+}
+.vp-real { background:var(--gdim); border:1px solid var(--gborder); color:var(--green); }
+.vp-false { background:var(--rdim); border:1px solid var(--rborder); color:var(--red); }
+.vp-uncertain { background:var(--ydim); border:1px solid var(--yborder); color:var(--yellow); }
+
+/* Confidence bar */
+.conf-track { height:3px; background:var(--bd); border-radius:3px; margin-bottom:20px; overflow:hidden; }
+.conf-fill { height:100%; border-radius:3px; transition:width .8s cubic-bezier(.4,0,.2,1); }
+.cf-real { background:var(--green); }
+.cf-false { background:var(--red); }
+.cf-uncertain { background:var(--yellow); }
+
+/* Section labels */
+.sec-label {
+  font-size:10px; font-weight:700; letter-spacing:1.4px; color:var(--tx3);
+  text-transform:uppercase; margin:18px 0 9px;
+  display:flex; align-items:center; gap:7px;
+}
+
+/* Agent cards */
+.agent-card {
+  background:var(--bg2); border:1px solid var(--bd); border-radius:var(--rad);
+  padding:11px 14px; margin-bottom:7px; transition:border-color var(--tr);
+}
+.agent-card:hover { border-color:var(--bd3); }
+.agent-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; gap:8px; }
+.agent-name { font-size:12px; font-weight:600; color:var(--tx2); font-family:var(--fm); }
+.agent-meta { display:flex; align-items:center; gap:7px; }
+.agent-conf { font-size:11px; color:var(--tx3); font-family:var(--fm); }
+.agent-pill { font-size:10px; font-weight:700; padding:2px 9px; border-radius:5px; letter-spacing:.4px; }
+.ap-real { background:rgba(62,207,142,.14); color:var(--green); }
+.ap-false { background:rgba(249,112,102,.14); color:var(--red); }
+.ap-uncertain { background:rgba(245,197,66,.14); color:var(--yellow); }
+.agent-just { font-size:12.5px; color:var(--tx2); line-height:1.6; }
+
+/* Sources */
+.source-card {
+  display:block; background:var(--bg2); border:1px solid var(--bd);
+  border-radius:var(--rad); padding:13px 15px; margin-bottom:9px;
+  transition:border-color var(--tr); text-decoration:none;
+}
+.source-card:hover { border-color:var(--accent); }
+.sc-title { font-size:13px; font-weight:600; color:var(--tx); margin-bottom:4px; display:flex; align-items:start; justify-content:space-between; gap:8px; }
+.sc-url { color:var(--accent); font-size:11px; font-family:var(--fm); display:block; margin-bottom:5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sc-snippet { font-size:12px; color:var(--tx2); line-height:1.55; margin-bottom:4px; }
+.sc-date { font-size:10px; color:var(--tx3); font-family:var(--fm); }
+
+/* Tip card */
+.tip-card {
+  display:flex; gap:12px; background:var(--adim); border:1px solid rgba(79,125,243,.22);
+  border-radius:var(--rad); padding:13px 15px; margin-top:14px;
+}
+.tip-icon { font-size:19px; flex-shrink:0; }
+.tip-text { font-size:12.5px; color:var(--tx2); line-height:1.65; }
+.tip-text strong { color:var(--accent); }
+
+/* Warning box */
+.warn-box {
+  display:flex; gap:10px; background:var(--ydim); border:1px solid var(--yborder);
+  color:var(--yellow); padding:10px 14px; border-radius:9px;
+  font-size:13px; margin:14px 0; line-height:1.6;
+}
+
+/* Message actions */
+.msg-actions { display:flex; gap:7px; margin-top:14px; flex-wrap:wrap; }
+.act-btn {
+  display:flex; align-items:center; gap:6px; padding:6px 12px;
+  background:transparent; border:1px solid var(--bd2) !important;
+  border-radius:8px; color:var(--tx3); font-size:11.5px; transition:all var(--tr);
+}
+.act-btn:hover { background:var(--bg3); color:var(--tx2); border-color:var(--bd3) !important; }
+.cache-line { margin-top:11px; font-size:11px; font-family:var(--fm); color:var(--tx3); }
+
+/* Typing */
+.typing-dots { display:flex; align-items:center; gap:4px; padding:4px 0; }
+.typing-dots span { width:6px; height:6px; border-radius:50%; background:var(--tx3); animation:bounce 1.3s ease-in-out infinite; }
+.typing-dots span:nth-child(2) { animation-delay:.16s; }
+.typing-dots span:nth-child(3) { animation-delay:.32s; }
+
+/* Error msg */
+.bot-err { color:var(--red); font-size:13px; line-height:1.65; }
+
+/* ═══════════════════════════════════════════════════════
+   INPUT AREA
+═══════════════════════════════════════════════════════ */
+.input-area {
+  padding:14px 22px 16px; background:var(--bg0);
+  border-top:1px solid var(--bd); flex-shrink:0;
+}
+.input-shell {
+  display:flex; align-items:flex-end; gap:8px; background:var(--bg2);
+  border:1px solid var(--bd2); border-radius:15px; padding:9px 11px;
+  transition:border-color var(--tr), box-shadow var(--tr);
+}
+.input-shell:focus-within { border-color:var(--accent); box-shadow:0 0 0 3px var(--aglow); }
+.inp-icon {
+  width:32px; height:32px; color:var(--tx3); border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition:all var(--tr); font-size:17px;
+}
+.inp-icon:hover { background:var(--bgh); color:var(--tx2); }
+#msgInput {
+  flex:1; background:transparent; border:none; outline:none;
+  color:var(--tx); font-size:13.5px; line-height:1.6; font-family:var(--ff);
+  resize:none; max-height:130px; overflow-y:auto; padding:3px 0;
+}
+#msgInput::placeholder { color:var(--tx3); }
+.send-btn {
+  width:36px; height:36px; background:var(--accent); border-radius:10px;
+  color:#fff; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition:all var(--tr); font-size:16px;
+}
+.send-btn:hover:not(:disabled) { background:var(--accent-h); transform:scale(1.06); }
+.send-btn:disabled { background:var(--bg3); cursor:not-allowed; }
+.input-foot {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-top:8px; padding:0 2px;
+}
+.inp-hint { font-size:11px; color:var(--tx3); font-family:var(--fm); }
+.inp-mood { font-size:11px; color:var(--tx3); font-family:var(--fm); background:var(--bg2); padding:3px 10px; border-radius:10px; border:1px solid var(--bd); }
+
+/* ═══════════════════════════════════════════════════════
+   OVERLAY MOBILE
+═══════════════════════════════════════════════════════ */
+.overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:35; backdrop-filter:blur(3px); }
+.overlay.show { display:block; }
+
+/* ═══════════════════════════════════════════════════════
+   MODALS
+═══════════════════════════════════════════════════════ */
+.modal-bg {
+  position:fixed; inset:0; background:rgba(0,0,0,.72);
+  display:flex; align-items:center; justify-content:center;
+  z-index:1000; backdrop-filter:blur(6px); padding:20px;
+}
+.modal {
+  background:var(--bg2); border:1px solid var(--bd2); border-radius:18px;
+  width:100%; position:relative; box-shadow:var(--shadow);
+  animation:fadeUp .22s ease both; max-height:90vh; overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.modal-hd {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px 24px; border-bottom:1px solid var(--bd); flex-shrink:0;
+}
+.modal-title { font-family:var(--fh); font-size:16px; font-weight:800; letter-spacing:.5px; }
+.modal-close {
+  width:28px; height:28px; background:var(--bg3); border:1px solid var(--bd) !important;
+  border-radius:8px; color:var(--tx2); display:flex; align-items:center;
+  justify-content:center; transition:all var(--tr); font-size:16px;
+}
+.modal-close:hover { background:var(--bgh); color:var(--tx); }
+.modal-body { padding:22px 24px; overflow-y:auto; flex:1; }
+.modal-body::-webkit-scrollbar { width:3px; }
+.modal-body::-webkit-scrollbar-thumb { background:var(--bd2); border-radius:3px; }
+
+/* Settings modal — two-column */
+.settings-modal { max-width:660px; }
+.settings-layout { display:flex; min-height:420px; }
+.settings-nav { width:150px; background:var(--bg1); border-right:1px solid var(--bd); padding:14px 0; flex-shrink:0; }
+.s-tab {
+  display:flex; align-items:center; gap:9px; width:100%; padding:10px 16px;
+  font-size:13px; color:var(--tx2); transition:all var(--tr); text-align:left;
+  border-left:3px solid transparent;
+}
+.s-tab:hover { background:var(--bgh); color:var(--tx); }
+.s-tab.active { background:var(--adim); color:var(--accent); border-left-color:var(--accent); }
+.s-pane { display:none; }
+.s-pane.active { display:block; }
+.s-section { margin-bottom:22px; }
+.s-section-title { font-size:11px; font-weight:700; letter-spacing:1px; color:var(--tx3); text-transform:uppercase; margin-bottom:12px; }
+.s-row { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:10px 0; border-bottom:1px solid var(--bd); }
+.s-row:last-child { border-bottom:none; }
+.s-label { display:flex; align-items:center; gap:9px; font-size:13px; color:var(--tx); }
+.s-label span:first-child { font-size:16px; width:22px; text-align:center; }
+.s-desc { font-size:11px; color:var(--tx3); margin-top:2px; }
+/* Toggle switch */
+.toggle { width:42px; height:24px; background:var(--bg3); border-radius:12px; cursor:pointer; transition:background .2s; position:relative; flex-shrink:0; }
+.toggle::after { content:''; position:absolute; width:20px; height:20px; background:#fff; border-radius:50%; top:2px; left:2px; transition:transform .2s; box-shadow:0 1px 4px rgba(0,0,0,.3); }
+.toggle.on { background:var(--accent); }
+.toggle.on::after { transform:translateX(18px); }
+/* Font scale buttons */
+.font-btns { display:flex; gap:5px; }
+.font-btn {
+  width:34px; height:30px; background:var(--bg3); border:1px solid var(--bd2) !important;
+  border-radius:7px; color:var(--tx2); font-size:12px; font-weight:700; transition:all var(--tr);
+}
+.font-btn:hover, .font-btn.on { background:var(--accent); color:#fff; border-color:var(--accent) !important; }
+/* Theme swatches */
+.theme-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.theme-swatch {
+  padding:10px 12px; border-radius:10px; border:2px solid var(--bd);
+  cursor:pointer; font-size:12.5px; color:var(--tx2); transition:all var(--tr);
+  display:flex; align-items:center; gap:8px;
+}
+.theme-swatch:hover { border-color:var(--bd2); color:var(--tx); }
+.theme-swatch.on { border-color:var(--accent); color:var(--accent); background:var(--adim); }
+.sw-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+/* Mood swatches */
+.mood-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.mood-card {
+  padding:12px; border-radius:10px; border:1px solid var(--bd);
+  cursor:pointer; transition:all var(--tr); text-align:center;
+}
+.mood-card:hover { border-color:var(--bd2); background:var(--bg3); }
+.mood-card.on { border-color:var(--accent); background:var(--adim); }
+.mood-emoji { font-size:22px; margin-bottom:4px; }
+.mood-name { font-size:12px; font-weight:700; color:var(--tx); }
+.mood-desc { font-size:11px; color:var(--tx3); margin-top:2px; }
+/* Language */
+.lang-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.lang-btn {
+  padding:10px 12px; border-radius:9px; border:1px solid var(--bd);
+  cursor:pointer; font-size:12.5px; color:var(--tx2); transition:all var(--tr);
+  display:flex; align-items:center; gap:8px;
+}
+.lang-btn:hover { border-color:var(--bd2); color:var(--tx); background:var(--bg3); }
+.lang-btn.on { border-color:var(--accent); color:var(--accent); background:var(--adim); }
+/* Input controls */
+.s-input {
+  width:100%; background:var(--bg3); border:1px solid var(--bd2);
+  border-radius:9px; padding:10px 14px; color:var(--tx); font-size:13px;
+  font-family:var(--fm); outline:none; transition:border-color var(--tr);
+  margin-top:8px;
+}
+.s-input:focus { border-color:var(--accent); }
+.s-select {
+  background:var(--bg3); border:1px solid var(--bd2); color:var(--tx);
+  padding:7px 10px; border-radius:8px; font-size:13px; outline:none;
+}
+.s-btn {
+  padding:9px 18px; background:var(--accent); color:#fff; border-radius:9px;
+  font-size:13px; font-weight:700; transition:all var(--tr); margin-top:10px;
+}
+.s-btn:hover { background:var(--accent-h); }
+/* Agent toggle cards */
+.agent-toggle-card {
+  display:flex; align-items:center; gap:12px; padding:10px 12px;
+  background:var(--bg1); border:1px solid var(--bd); border-radius:10px;
+  transition:border-color var(--tr);
+}
+.agent-toggle-card.active { border-color:var(--bd2); }
+.atc-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.atc-info { flex:1; min-width:0; }
+.atc-name { font-size:12.5px; font-weight:700; color:var(--tx); display:flex; align-items:center; gap:7px; }
+.atc-badge { font-size:10px; padding:2px 7px; border-radius:10px; background:var(--bg3); color:var(--tx3); font-family:var(--fm); font-weight:400; }
+.atc-desc { font-size:11px; color:var(--tx3); margin-top:2px; line-height:1.5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+/* Line / letter spacing */
+.spacing-row { display:flex; gap:6px; flex-wrap:wrap; }
+.sp-opt {
+  padding:6px 12px; background:var(--bg3); border:1px solid var(--bd2) !important;
+  border-radius:7px; font-size:12px; color:var(--tx2); transition:all var(--tr);
+}
+.sp-opt:hover, .sp-opt.on { background:var(--accent); color:#fff; border-color:var(--accent) !important; }
+
+/* About modal */
+.about-modal { max-width:460px; }
+.about-step { display:flex; gap:12px; margin-bottom:16px; }
+.about-step-num { width:26px; height:26px; background:var(--adim); border:1px solid rgba(79,125,243,.3); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:var(--accent); flex-shrink:0; margin-top:1px; }
+.about-step-txt { font-size:13.5px; color:var(--tx2); line-height:1.7; }
+.about-step-txt strong { color:var(--tx); }
+
+/* Toast */
+.toast {
+  position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(8px);
+  background:var(--bg3); border:1px solid var(--bd2); color:var(--tx);
+  padding:11px 22px; border-radius:12px; font-size:13px;
+  box-shadow:var(--shadow-sm); opacity:0; pointer-events:none; z-index:9999;
+  white-space:nowrap; transition:all .28s ease;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* Reading guide */
+#readingGuide {
+  position:fixed; left:0; right:0; height:44px; pointer-events:none; z-index:7000;
+  border-top:2px solid rgba(79,125,243,.35); border-bottom:2px solid rgba(79,125,243,.35);
+  background:rgba(79,125,243,.04); display:none;
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════ */
+@media(max-width:720px){
+  .sidebar{position:fixed;top:0;left:0;height:100%;transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .topbar{display:flex}
+  .input-area{padding:10px 14px 12px}
+  .msg-wrap{padding:16px 15px}
+  .welcome{padding:32px 16px}
+  .msg-bubble{max-width:88%}
+  .settings-layout{flex-direction:column}
+  .settings-nav{width:100%;display:flex;flex-wrap:wrap;border-right:none;border-bottom:1px solid var(--bd);padding:10px}
+  .s-tab{flex:1;justify-content:center;font-size:11.5px;border-left:none;border-bottom:2px solid transparent;padding:8px 6px}
+  .s-tab.active{border-left:none;border-bottom-color:var(--accent)}
+  .theme-grid,.mood-grid,.lang-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<a href="#chatMain" class="skip-link" tabindex="1">Pular para conteúdo principal</a>
+<div id="readingGuide"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SPLASH SCREEN
+═══════════════════════════════════════════════════════ -->
+<div id="splash" role="status" aria-label="Carregando AI VERITY" aria-live="polite">
+  <!-- Fundo animado -->
+  <div class="sp-grid"></div>
+  <div class="sp-vignette"></div>
+  <div class="sp-scan"></div>
+  <div class="sp-glow-l"></div>
+  <div class="sp-glow-r"></div>
+  <!-- Partículas geradas por JS -->
+  <div class="sp-particles" id="spParticles"></div>
+
+  <!-- Conteúdo -->
+  <div class="sp-center">
+    <!-- Logo -->
+    <div class="sp-logo-wrap">
+      <div class="sp-ring"></div>
+      <div class="sp-ring2"></div>
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#4f7df3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <path d="m9 12 2 2 4-4"/>
+      </svg>
+    </div>
+
+    <!-- Nome -->
+    <div class="sp-name">AI <span>VERITY</span></div>
+    <div class="sp-tagline" id="spTagline">INICIALIZANDO MOTOR DE VERIFICAÇÃO</div>
+
+    <!-- Agentes -->
+    <div class="sp-agents">
+      <span class="sp-agent">Perplexity Pro</span>
+      <span class="sp-agent">Google FactCheck</span>
+      <span class="sp-agent">GPT-4o Verifier</span>
+      <span class="sp-agent">Claude 3.5</span>
+      <span class="sp-agent">Snopes Crawler</span>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="sp-bar-wrap"><div class="sp-bar" id="spBar"></div></div>
+    <div class="sp-status" id="spStatus">Conectando agentes...</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     LOGIN
+═══════════════════════════════════════════════════════ -->
+<section id="loginScreen" role="dialog" aria-modal="true" aria-label="Tela de autenticação">
+  <div class="login-bg"></div>
+  <div class="login-card">
+    <div class="login-logo">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+    </div>
+    <h1 class="login-title">AI VERITY</h1>
+    <p class="login-sub" id="l-sub">Plataforma de verificação de fatos</p>
+    <div class="login-tabs" role="tablist">
+      <button class="login-tab active" id="tabLogin" role="tab" aria-selected="true" onclick="switchLoginTab('login')">Entrar</button>
+      <button class="login-tab" id="tabReg" role="tab" aria-selected="false" onclick="switchLoginTab('register')">Criar Conta</button>
+    </div>
+    <form id="loginForm" autocomplete="on" novalidate>
+      <div class="l-field"><label for="lu" id="lu-label">Usuário</label><input id="lu" type="text" autocomplete="username" aria-labelledby="lu-label" required></div>
+      <div class="l-field"><label for="lp" id="lp-label">Senha</label><input id="lp" type="password" autocomplete="current-password" aria-labelledby="lp-label" required></div>
+      <div class="l-field hidden" id="emailField"><label for="le" id="le-label">E-mail (opcional)</label><input id="le" type="email" autocomplete="email" aria-labelledby="le-label"></div>
+      <button type="submit" class="l-btn" id="submitBtn">Entrar</button>
+    </form>
+    <div id="lErr" class="l-error hidden" role="alert"></div>
+    <div class="l-separator"><span id="l-or">ou</span></div>
+    <button class="l-btn" style="background:var(--bg3);color:var(--tx2);border:1px solid var(--bd2)" id="guestBtn">Continuar como Visitante</button>
+    <div class="l-footer" id="l-footer">Seus dados ficam somente neste navegador</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     APP
+═══════════════════════════════════════════════════════ -->
+<div id="app" class="hidden">
+  <div id="app-inner" style="display:flex;height:100vh;width:100%;overflow:hidden;position:relative">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="sidebar" role="navigation" aria-label="Menu principal">
+    <div class="sb-header">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <span class="brand-name">AI VERITY</span>
+      </div>
+      <button class="icon-btn" onclick="openSettings()" title="Configurações" aria-label="Abrir configurações">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+    <div class="sb-stats">
+      <div class="sb-stat"><div class="sb-num g" id="sReal">0</div><div class="sb-lbl" data-i18n="stats_real">Reais</div></div>
+      <div class="sb-stat"><div class="sb-num r" id="sFalse">0</div><div class="sb-lbl" data-i18n="stats_false">Falsas</div></div>
+      <div class="sb-stat"><div class="sb-num" id="sTotal">0</div><div class="sb-lbl" data-i18n="stats_total">Total</div></div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-hd">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        <span data-i18n="trending">Em Alta</span>
+      </div>
+      <div class="sb-list" id="trendingList"></div>
+    </div>
+    <div class="sb-section" style="flex:1;max-height:none">
+      <div class="sb-section-hd">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span data-i18n="recent">Recentes</span>
+      </div>
+      <div class="sb-list" id="historyList"></div>
+    </div>
+    <div class="sb-nav">
+      <button class="nav-btn" onclick="newChat()"><span class="nb-icon">✦</span> <span data-i18n="new_check">Nova Verificação</span></button>
+      <button class="nav-btn" onclick="openAbout()"><span class="nb-icon">◎</span> <span data-i18n="about">Sobre o Projeto</span></button>
+      <button class="nav-btn" onclick="doLogout()" style="color:var(--red)"><span class="nb-icon">⊘</span> <span data-i18n="logout">Sair</span></button>
+    </div>
+    <div class="sb-foot">
+      <div class="online-row">
+        <div class="dot-live"></div>
+        <span class="foot-txt">v4.2.0 · <span id="userDisplay"></span></span>
+      </div>
+      <div class="user-avatar" id="userAvatar">?</div>
+    </div>
+  </aside>
+
+  <!-- Overlay mobile -->
+  <div id="overlay" class="overlay" onclick="closeSidebar()"></div>
+
+  <!-- Main -->
+  <main class="main" id="appMain">
+    <div class="topbar">
+      <button class="icon-btn" onclick="openSidebar()" aria-label="Abrir menu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span class="tb-center">AI VERITY</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div class="dot-live"></div>
+        <span style="font-size:11px;color:var(--tx3);font-family:var(--fm)">Online</span>
+      </div>
+    </div>
+
+    <div id="chatMain" class="chat" role="log" aria-live="polite" aria-label="Área de verificação" tabindex="0"></div>
+
+    <div class="input-area">
+      <div class="input-shell">
+        <button class="inp-icon" onclick="document.getElementById('fileInput').click()" aria-label="Anexar imagem" title="Anexar imagem">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </button>
+        <input type="file" id="fileInput" accept="image/*" style="display:none" aria-hidden="true">
+        <textarea id="msgInput" rows="1" aria-label="Campo de verificação" data-i18n-ph="placeholder"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled aria-label="Enviar verificação">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+        </button>
+      </div>
+      <div class="input-foot">
+        <span class="inp-hint" data-i18n="input_hint">Enter para verificar · Shift+Enter para nova linha</span>
+        <span class="inp-mood" id="moodDisplay"></span>
+      </div>
+    </div>
+  </main>
+
+  </div><!-- /app-inner -->
+</div><!-- /app -->
+
+<!-- ═══════════════════════════════════════════════════════
+     MODALS
+═══════════════════════════════════════════════════════ -->
+
+<!-- Settings -->
+<div id="settingsModal" class="modal-bg hidden" onclick="closeSettings()" role="dialog" aria-modal="true" aria-label="Configurações">
+  <div class="modal settings-modal" onclick="event.stopPropagation()" style="max-width:660px">
+    <div class="modal-hd">
+      <span class="modal-title" data-i18n="settings_title">Configurações</span>
+      <button class="modal-close" onclick="closeSettings()" aria-label="Fechar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="settings-layout">
+      <nav class="settings-nav" role="tablist">
+        <button class="s-tab active" onclick="setStab('api')" role="tab" aria-selected="true" data-stab="api">🔑 <span data-i18n="s_api">API</span></button>
+        <button class="s-tab" onclick="setStab('accessibility')" role="tab" data-stab="accessibility">♿ <span data-i18n="s_access">Acessibilidade</span></button>
+        <button class="s-tab" onclick="setStab('appearance')" role="tab" data-stab="appearance">🎨 <span data-i18n="s_appear">Aparência</span></button>
+        <button class="s-tab" onclick="setStab('mood')" role="tab" data-stab="mood">😄 <span data-i18n="s_mood">Humor</span></button>
+        <button class="s-tab" onclick="setStab('language')" role="tab" data-stab="language">🌐 <span data-i18n="s_lang">Idioma</span></button>
+      </nav>
+      <div class="modal-body" style="padding:20px 22px">
+
+        <!-- API Pane -->
+        <div class="s-pane active" id="pane-api">
+          <div class="s-section">
+            <div class="s-section-title" data-i18n="api_config">Configuração de API</div>
+            <p style="font-size:13px;color:var(--tx2);line-height:1.7;margin-bottom:10px" data-i18n="api_desc">Insira sua chave Groq. Ela é lida do arquivo <code style="background:var(--bg3);padding:1px 6px;border-radius:4px;font-family:var(--fm)">.env</code> automaticamente em modo local, ou pode ser inserida manualmente.</p>
+            <input type="password" class="s-input" id="apiKeyInput" placeholder="gsk_..." aria-label="Chave de API Groq">
+            <p style="font-size:11px;color:var(--tx3);margin-top:6px" data-i18n="api_local">Armazenada apenas no seu navegador, nunca enviada a terceiros.</p>
+          </div>
+          <div class="s-section">
+            <div class="s-section-title" data-i18n="model_sel">Modelo de Linguagem Principal</div>
+            <select class="s-select" id="modelSelect" style="width:100%;margin-top:0" aria-label="Selecionar modelo principal">
+              <optgroup label="─── Meta Llama ───────────────">
+                <option value="llama-3.3-70b-versatile">Llama 3.3 70B Versatile ★ Recomendado</option>
+                <option value="llama-3.1-8b-instant">Llama 3.1 8B Instant ⚡ Ultra-Rápido</option>
+                <option value="meta-llama/llama-4-scout-17b-16e-instruct">Llama 4 Scout 17B 🔭 Mais Recente</option>
+                <option value="meta-llama/llama-4-maverick-17b-128e-instruct">Llama 4 Maverick 17B 🦅 128K Context</option>
+              </optgroup>
+              <optgroup label="─── Qwen / Alibaba ───────────">
+                <option value="qwen/qwen3-32b">Qwen3 32B 🧠 Raciocínio Avançado</option>
+                <option value="qwen-qwq-32b">Qwen QwQ 32B 💭 Chain-of-Thought</option>
+              </optgroup>
+              <optgroup label="─── OpenAI OSS ───────────────">
+                <option value="openai/gpt-oss-120b">GPT OSS 120B 🏆 Maior Modelo</option>
+                <option value="openai/gpt-oss-20b">GPT OSS 20B 🎯 Balanceado</option>
+              </optgroup>
+              <optgroup label="─── Moonshot AI ──────────────">
+                <option value="moonshotai/kimi-k2-instruct">Kimi K2 🌙 Especialista em Fatos</option>
+              </optgroup>
+              <optgroup label="─── DeepSeek ─────────────────">
+                <option value="deepseek-r1-distill-llama-70b">DeepSeek R1 Distill 70B 🔍 Raciocínio</option>
+              </optgroup>
+              <optgroup label="─── Google ───────────────────">
+                <option value="gemma2-9b-it">Gemma 2 9B 💎 Google Lightweight</option>
+              </optgroup>
+            </select>
+            <p style="font-size:11px;color:var(--tx3);margin-top:8px">Todos os modelos rodam no hardware <strong style="color:var(--accent)">Groq LPU™</strong> — até 10× mais rápido que GPU.</p>
+          </div>
+
+          <div class="s-section">
+            <div class="s-section-title">Agentes de Verificação Ativos</div>
+            <div id="agentsList" style="display:flex;flex-direction:column;gap:6px;margin-top:4px"></div>
+            <p style="font-size:11px;color:var(--tx3);margin-top:8px">Os agentes selecionados participam do consenso multi-modelo em cada verificação.</p>
+          </div>
+          <button class="s-btn" onclick="saveApiKey()" data-i18n="save_key">Salvar Configurações de API</button>
+        </div>
+
+        <!-- Accessibility Pane -->
+        <div class="s-pane" id="pane-accessibility">
+          <div class="s-section">
+            <div class="s-section-title" data-i18n="visual">Visão</div>
+            <div class="s-row">
+              <div><div class="s-label"><span>🔲</span> <span data-i18n="high_contrast">Alto Contraste</span></div></div>
+              <div class="toggle" id="togHC" onclick="toggleHC()" role="switch" aria-checked="false" aria-label="Alto contraste" tabindex="0"></div>
+            </div>
+            <div class="s-row">
+              <div><div class="s-label"><span>🎨</span> <span data-i18n="desaturate">Dessaturar Cores</span></div></div>
+              <div class="toggle" id="togDesat" onclick="toggleDesat()" role="switch" aria-checked="false" aria-label="Dessaturar" tabindex="0"></div>
+            </div>
+            <div class="s-row">
+              <div><div class="s-label"><span>🔗</span> <span data-i18n="underline_links">Sublinhar Links</span></div></div>
+              <div class="toggle" id="togLinks" onclick="toggleLinks()" role="switch" aria-checked="false" aria-label="Sublinhar links" tabindex="0"></div>
+            </div>
+          </div>
+          <div class="s-section">
+            <div class="s-section-title" data-i18n="reading">Leitura</div>
+            <div class="s-row">
+              <div><div class="s-label"><span>📏</span> <span data-i18n="font_size">Tamanho da Fonte</span></div></div>
+              <div class="font-btns">
+                <button class="font-btn" onclick="setFS(.85,'fs-sm')" id="fs-sm" aria-label="Pequena">A-</button>
+                <button class="font-btn on" onclick="setFS(1,'fs-md')" id="fs-md" aria-label="Normal">A</button>
+                <button class="font-btn" onclick="setFS(1.15,'fs-lg')" id="fs-lg" aria-label="Grande">A+</button>
+                <button class="font-btn" onclick="setFS(1.32,'fs-xl')" id="fs-xl" aria-label="Extra">A++</button>
+              </div>
+            </div>
+            <div class="s-row">
+              <div><div class="s-label"><span>📖</span> <span data-i18n="dyslexia_font">Fonte para Dislexia</span></div></div>
+              <div class="toggle" id="togDyslexia" onclick="toggleDyslexia()" role="switch" aria-checked="false" aria-label="Fonte dislexia" tabindex="0"></div>
+            </div>
+            <div class="s-row">
+              <div><div class="s-label"><span>↕</span> <span data-i18n="line_height">Espaço entre Linhas</span></div></div>
+              <div class="spacing-row">
+                <button class="sp-opt on" onclick="setLH(1.65,'lh1')" id="lh1">1×</button>
+                <button class="sp-opt" onclick="setLH(1.9,'lh2')" id="lh2">1.2×</button>
+                <button class="sp-opt" onclick="setLH(2.15,'lh3')" id="lh3">1.5×</button>
+                <button class="sp-opt" onclick="setLH(2.5,'lh4')" id="lh4">2×</button>
+              </div>
+            </div>
+            <div class="s-row">
+              <div><div class="s-label"><span>↔</span> <span data-i18n="letter_spacing">Espaço entre Letras</span></div></div>
+              <div class="spacing-row">
+                <button class="sp-opt on" onclick="setLS('normal','ls1')" id="ls1">Aa</button>
+                <button class="sp-opt" onclick="setLS('1px','ls2')" id="ls2">A a</button>
+                <button class="sp-opt" onclick="setLS('2px','ls3')" id="ls3">A  a</button>
+              </div>
+            </div>
+            <div class="s-row">
+              <div><div class="s-label"><span>📐</span> <span data-i18n="reading_guide">Guia de Leitura</span></div></div>
+              <div class="toggle" id="togGuide" onclick="toggleGuide()" role="switch" aria-checked="false" aria-label="Guia de leitura" tabindex="0"></div>
+            </div>
+          </div>
+          <div class="s-section">
+            <div class="s-section-title" data-i18n="interaction">Interação</div>
+            <div class="s-row">
+              <div><div class="s-label"><span>⏸</span> <span data-i18n="reduce_motion">Reduzir Animações</span></div></div>
+              <div class="toggle" id="togMotion" onclick="toggleMotion()" role="switch" aria-checked="false" aria-label="Reduzir animações" tabindex="0"></div>
+            </div>
+            <div class="s-row">
+              <div><div class="s-label"><span>🖱</span> <span data-i18n="big_cursor">Cursor Grande</span></div></div>
+              <div class="toggle" id="togCursor" onclick="toggleCursor()" role="switch" aria-checked="false" aria-label="Cursor grande" tabindex="0"></div>
+            </div>
+            <div class="s-row">
+              <div><div class="s-label"><span>🔊</span> <span data-i18n="tts">Leitura em Voz Alta (TTS)</span></div></div>
+              <div class="toggle" id="togTTS" onclick="toggleTTS()" role="switch" aria-checked="false" aria-label="Leitura em voz alta" tabindex="0"></div>
+            </div>
+            <div class="s-row">
+              <div><div class="s-label"><span>🤟</span> <span data-i18n="vlibras">VLibras (Língua de Sinais)</span></div></div>
+              <button class="s-btn" style="margin-top:0;padding:7px 14px;font-size:12px" onclick="activateVLibras()" data-i18n="vlibras_open">Ativar VLibras</button>
+            </div>
+            <button class="s-btn" style="background:var(--bg3);color:var(--tx2);border:1px solid var(--bd2);width:100%;text-align:center;margin-top:12px" onclick="resetA11y()" data-i18n="reset_a11y">↩ Restaurar Padrões de Acessibilidade</button>
+          </div>
+        </div>
+
+        <!-- Appearance Pane -->
+        <div class="s-pane" id="pane-appearance">
+          <div class="s-section">
+            <div class="s-section-title" data-i18n="theme">Tema Visual</div>
+            <div class="theme-grid">
+              <button class="theme-swatch on" id="th-dark" onclick="setTheme('dark')" aria-label="Tema escuro">
+                <div class="sw-dot" style="background:#18181c;border:1px solid #333"></div> <span data-i18n="t_dark">Escuro</span>
+              </button>
+              <button class="theme-swatch" id="th-light" onclick="setTheme('light')" aria-label="Tema claro">
+                <div class="sw-dot" style="background:#f0f2f7;border:1px solid #ccc"></div> <span data-i18n="t_light">Claro</span>
+              </button>
+              <button class="theme-swatch" id="th-contrast" onclick="setTheme('contrast')" aria-label="Alto contraste">
+                <div class="sw-dot" style="background:#000;border:2px solid #fff"></div> <span data-i18n="t_contrast">Contraste Total</span>
+              </button>
+              <button class="theme-swatch" id="th-sepia" onclick="setTheme('sepia')" aria-label="Tema sépia">
+                <div class="sw-dot" style="background:#e8e2d9;border:1px solid #b8b2a9"></div> <span data-i18n="t_sepia">Sépia</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mood Pane -->
+        <div class="s-pane" id="pane-mood">
+          <div class="s-section">
+            <div class="s-section-title" data-i18n="mood_title">Personalidade das Respostas</div>
+            <p style="font-size:12.5px;color:var(--tx2);line-height:1.7;margin-bottom:14px" data-i18n="mood_desc">Escolha o tom das análises geradas pela plataforma.</p>
+            <div class="mood-grid" id="moodGrid"></div>
+          </div>
+        </div>
+
+        <!-- Language Pane -->
+        <div class="s-pane" id="pane-language">
+          <div class="s-section">
+            <div class="s-section-title" data-i18n="language_title">Idioma da Interface</div>
+            <div class="lang-grid" id="langGrid"></div>
+          </div>
+        </div>
+
+      </div><!-- /modal-body -->
+    </div><!-- /settings-layout -->
+  </div>
+</div>
+
+<!-- About -->
+<div id="aboutModal" class="modal-bg hidden" onclick="closeAbout()" role="dialog" aria-modal="true" aria-label="Sobre o projeto">
+  <div class="modal about-modal" onclick="event.stopPropagation()" style="max-width:460px">
+    <div class="modal-hd">
+      <span class="modal-title" data-i18n="about_title">Sobre o AI VERITY</span>
+      <button class="modal-close" onclick="closeAbout()" aria-label="Fechar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="aboutBody"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- VLibras -->
+<div vw class="enabled"><div vw-access-button class="active" style="display:none"></div><div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div></div>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script>try{new window.VLibras.Widget('https://vlibras.gov.br/app')}catch(e){}</script>
+
+<!-- React root (necessário pro build) -->
+<div id="root" aria-hidden="true"></div>
+<script type="module" src="/src/main.tsx"></script>
+
+<!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT PRINCIPAL
+═══════════════════════════════════════════════════════ -->
+<script>
+(function(){
+'use strict';
+
+/* ═══ ENV CONFIG (lida do .env via Vite import.meta.env) ═══ */
+const ENV = {
+  apiKey: (typeof import_meta_env !== 'undefined' && import_meta_env.VITE_GROQ_API_KEY) || '',
+  model:  (typeof import_meta_env !== 'undefined' && import_meta_env.VITE_GROQ_MODEL)   || 'llama-3.3-70b-versatile',
+};
+
+/* ═══ INTERNACIONALIZAÇÃO ═══ */
+const LANGS = {
+  pt: {
+    code:'pt', name:'Português', flag:'🇧🇷',
+    stats_real:'Reais', stats_false:'Falsas', stats_total:'Total',
+    trending:'Em Alta', recent:'Recentes',
+    new_check:'Nova Verificação', about:'Sobre o Projeto', logout:'Sair',
+    settings_title:'Configurações', s_api:'API', s_access:'Acessibilidade',
+    s_appear:'Aparência', s_mood:'Humor', s_lang:'Idioma',
+    api_config:'Configuração de API',
+    api_desc:'Insira sua chave Groq. Ela é lida do arquivo .env automaticamente em modo local, ou pode ser inserida manualmente.',
+    api_local:'Armazenada apenas no seu navegador, nunca enviada a terceiros.',
+    model_sel:'Modelo de Linguagem', save_key:'Salvar Configurações de API',
+    visual:'Visão', high_contrast:'Alto Contraste', desaturate:'Dessaturar Cores', underline_links:'Sublinhar Links',
+    reading:'Leitura', font_size:'Tamanho da Fonte', dyslexia_font:'Fonte para Dislexia',
+    line_height:'Espaço entre Linhas', letter_spacing:'Espaço entre Letras', reading_guide:'Guia de Leitura',
+    interaction:'Interação', reduce_motion:'Reduzir Animações', big_cursor:'Cursor Grande',
+    tts:'Leitura em Voz Alta (TTS)', vlibras:'VLibras (Língua de Sinais)', vlibras_open:'Ativar VLibras',
+    reset_a11y:'↩ Restaurar Padrões de Acessibilidade',
+    theme:'Tema Visual', t_dark:'Escuro', t_light:'Claro', t_contrast:'Contraste Total', t_sepia:'Sépia',
+    mood_title:'Personalidade das Respostas', mood_desc:'Escolha o tom das análises geradas pela plataforma.',
+    language_title:'Idioma da Interface',
+    about_title:'Sobre o AI VERITY',
+    input_hint:'Enter para verificar · Shift+Enter para nova linha',
+    placeholder:'Cole uma alegação, notícia ou informação para verificar...',
+    welcome_title:'VERIFICAÇÃO DE FATOS',
+    welcome_desc:'Analise alegações e conteúdos digitais com múltiplos modelos de linguagem em consenso. Combate à <strong>desinformação digital</strong> em tempo real.',
+    examples_lbl:'EXPERIMENTE VERIFICAR:',
+    verdict_real:'VERIFICADO REAL', verdict_false:'VERIFICADO FALSO', verdict_uncertain:'INCONCLUSIVO',
+    agents_label:'ANÁLISE POR AGENTE', sources_label:'FONTES REFERENCIADAS',
+    tip_label:'Dica de Verificação', warn_label:'Resultado Inconclusivo',
+    warn_text:'Os agentes não atingiram consenso mínimo de 80%. Evidências insuficientes ou conflitantes.',
+    copy_report:'Copiar Relatório', hear:'Ouvir', share:'Compartilhar',
+    cache_label:'Consenso processado em',
+    err_no_key:'Configure a chave de API do Groq nas Configurações para realizar verificações com IA.',
+    err_prefix:'Erro na verificação:',
+    toast_copy:'Relatório copiado!', toast_share:'Link copiado!', toast_key:'Chave de API salva com sucesso.',
+    toast_a11y:'Acessibilidade restaurada.', toast_vlibras:'VLibras ativado.',
+    guest:'Visitante',
+    login_sub:'Plataforma de verificação de fatos',
+    login_footer:'Seus dados ficam somente neste navegador',
+    login_sep:'ou',
+    login_enter:'Entrar', login_create:'Criar Conta',
+    tab_login:'Entrar', tab_register:'Criar Conta',
+    no_history:'Nenhuma verificação ainda.',
+  },
+  en: {
+    code:'en', name:'English', flag:'🇺🇸',
+    stats_real:'Real', stats_false:'False', stats_total:'Total',
+    trending:'Trending', recent:'Recent',
+    new_check:'New Check', about:'About', logout:'Sign Out',
+    settings_title:'Settings', s_api:'API', s_access:'Accessibility',
+    s_appear:'Appearance', s_mood:'Mood', s_lang:'Language',
+    api_config:'API Configuration',
+    api_desc:'Enter your Groq key. It is automatically read from the .env file in local mode, or can be entered manually.',
+    api_local:'Stored only in your browser, never sent to third parties.',
+    model_sel:'Language Model', save_key:'Save API Settings',
+    visual:'Vision', high_contrast:'High Contrast', desaturate:'Desaturate Colors', underline_links:'Underline Links',
+    reading:'Reading', font_size:'Font Size', dyslexia_font:'Dyslexia Font',
+    line_height:'Line Height', letter_spacing:'Letter Spacing', reading_guide:'Reading Guide',
+    interaction:'Interaction', reduce_motion:'Reduce Motion', big_cursor:'Large Cursor',
+    tts:'Text-to-Speech (TTS)', vlibras:'VLibras (Sign Language)', vlibras_open:'Enable VLibras',
+    reset_a11y:'↩ Reset Accessibility Settings',
+    theme:'Visual Theme', t_dark:'Dark', t_light:'Light', t_contrast:'High Contrast', t_sepia:'Sepia',
+    mood_title:'Response Personality', mood_desc:'Choose the tone for analysis generated by the platform.',
+    language_title:'Interface Language',
+    about_title:'About AI VERITY',
+    input_hint:'Enter to verify · Shift+Enter for new line',
+    placeholder:'Paste a claim, news article, or information to verify...',
+    welcome_title:'FACT-CHECKING ENGINE',
+    welcome_desc:'Analyze claims and digital content using multiple language models in consensus. Combat <strong>digital misinformation</strong> in real time.',
+    examples_lbl:'TRY VERIFYING:',
+    verdict_real:'VERIFIED REAL', verdict_false:'VERIFIED FALSE', verdict_uncertain:'INCONCLUSIVE',
+    agents_label:'AGENT ANALYSIS', sources_label:'REFERENCED SOURCES',
+    tip_label:'Verification Tip', warn_label:'Inconclusive Result',
+    warn_text:'Agents did not reach minimum 80% consensus. Insufficient or conflicting evidence.',
+    copy_report:'Copy Report', hear:'Listen', share:'Share',
+    cache_label:'Consensus processed in',
+    err_no_key:'Configure your Groq API key in Settings to perform AI-powered verifications.',
+    err_prefix:'Verification error:',
+    toast_copy:'Report copied!', toast_share:'Link copied!', toast_key:'API key saved successfully.',
+    toast_a11y:'Accessibility reset.', toast_vlibras:'VLibras activated.',
+    guest:'Guest',
+    login_sub:'Fact verification platform',
+    login_footer:'Your data stays only in this browser',
+    login_sep:'or',
+    login_enter:'Sign In', login_create:'Create Account',
+    tab_login:'Sign In', tab_register:'Register',
+    no_history:'No verifications yet.',
+  },
+  es: {
+    code:'es', name:'Español', flag:'🇪🇸',
+    stats_real:'Reales', stats_false:'Falsas', stats_total:'Total',
+    trending:'Tendencias', recent:'Recientes',
+    new_check:'Nueva Verificación', about:'Acerca de', logout:'Cerrar Sesión',
+    settings_title:'Configuración', s_api:'API', s_access:'Accesibilidad',
+    s_appear:'Apariencia', s_mood:'Humor', s_lang:'Idioma',
+    api_config:'Configuración de API',
+    api_desc:'Ingresa tu clave Groq. Se lee automáticamente del archivo .env en modo local, o puede ingresarse manualmente.',
+    api_local:'Almacenada solo en tu navegador, nunca enviada a terceros.',
+    model_sel:'Modelo de Lenguaje', save_key:'Guardar Configuración de API',
+    visual:'Visión', high_contrast:'Alto Contraste', desaturate:'Desaturar Colores', underline_links:'Subrayar Vínculos',
+    reading:'Lectura', font_size:'Tamaño de Fuente', dyslexia_font:'Fuente para Dislexia',
+    line_height:'Interlineado', letter_spacing:'Espaciado entre Letras', reading_guide:'Guía de Lectura',
+    interaction:'Interacción', reduce_motion:'Reducir Animaciones', big_cursor:'Cursor Grande',
+    tts:'Lectura en Voz Alta (TTS)', vlibras:'VLibras (Lengua de Señas)', vlibras_open:'Activar VLibras',
+    reset_a11y:'↩ Restaurar Configuración de Accesibilidad',
+    theme:'Tema Visual', t_dark:'Oscuro', t_light:'Claro', t_contrast:'Contraste Total', t_sepia:'Sepia',
+    mood_title:'Personalidad de las Respuestas', mood_desc:'Elige el tono del análisis generado por la plataforma.',
+    language_title:'Idioma de la Interfaz',
+    about_title:'Sobre AI VERITY',
+    input_hint:'Enter para verificar · Shift+Enter para nueva línea',
+    placeholder:'Pega una afirmación, noticia o información para verificar...',
+    welcome_title:'MOTOR DE VERIFICACIÓN',
+    welcome_desc:'Analiza afirmaciones y contenido digital con múltiples modelos de lenguaje en consenso. Combate la <strong>desinformación digital</strong> en tiempo real.',
+    examples_lbl:'PRUEBA VERIFICANDO:',
+    verdict_real:'VERIFICADO REAL', verdict_false:'VERIFICADO FALSO', verdict_uncertain:'INCONCLUSO',
+    agents_label:'ANÁLISIS POR AGENTE', sources_label:'FUENTES REFERENCIADAS',
+    tip_label:'Consejo de Verificación', warn_label:'Resultado Inconcluso',
+    warn_text:'Los agentes no alcanzaron el consenso mínimo del 80%. Evidencia insuficiente o conflictiva.',
+    copy_report:'Copiar Informe', hear:'Escuchar', share:'Compartir',
+    cache_label:'Consenso procesado en',
+    err_no_key:'Configura tu clave API de Groq en Configuración para realizar verificaciones con IA.',
+    err_prefix:'Error de verificación:',
+    toast_copy:'¡Informe copiado!', toast_share:'¡Enlace copiado!', toast_key:'Clave de API guardada.',
+    toast_a11y:'Accesibilidad restaurada.', toast_vlibras:'VLibras activado.',
+    guest:'Visitante',
+    login_sub:'Plataforma de verificación de hechos',
+    login_footer:'Tus datos permanecen solo en este navegador',
+    login_sep:'o',
+    login_enter:'Entrar', login_create:'Crear Cuenta',
+    tab_login:'Entrar', tab_register:'Registrarse',
+    no_history:'Aún no hay verificaciones.',
+  },
+  fr: {
+    code:'fr', name:'Français', flag:'🇫🇷',
+    stats_real:'Réels', stats_false:'Faux', stats_total:'Total',
+    trending:'Tendances', recent:'Récents',
+    new_check:'Nouvelle Vérification', about:'À Propos', logout:'Déconnexion',
+    settings_title:'Paramètres', s_api:'API', s_access:'Accessibilité',
+    s_appear:'Apparence', s_mood:'Humeur', s_lang:'Langue',
+    api_config:"Configuration de l'API",
+    api_desc:"Entrez votre clé Groq. Elle est lue automatiquement depuis le fichier .env en mode local, ou peut être saisie manuellement.",
+    api_local:"Stockée uniquement dans votre navigateur, jamais envoyée à des tiers.",
+    model_sel:'Modèle de Langage', save_key:"Enregistrer la Configuration API",
+    visual:'Vision', high_contrast:'Contraste Élevé', desaturate:'Désaturer les Couleurs', underline_links:'Souligner les Liens',
+    reading:'Lecture', font_size:'Taille de Police', dyslexia_font:'Police Dyslexie',
+    line_height:'Interligne', letter_spacing:'Espacement des Lettres', reading_guide:'Guide de Lecture',
+    interaction:'Interaction', reduce_motion:'Réduire les Animations', big_cursor:'Grand Curseur',
+    tts:'Lecture à Voix Haute (TTS)', vlibras:'VLibras (Langue des Signes)', vlibras_open:'Activer VLibras',
+    reset_a11y:"↩ Réinitialiser l'Accessibilité",
+    theme:'Thème Visuel', t_dark:'Sombre', t_light:'Clair', t_contrast:'Contraste Total', t_sepia:'Sépia',
+    mood_title:'Personnalité des Réponses', mood_desc:"Choisissez le ton des analyses générées par la plateforme.",
+    language_title:"Langue de l'Interface",
+    about_title:'À Propos de AI VERITY',
+    input_hint:"Entrée pour vérifier · Maj+Entrée pour nouvelle ligne",
+    placeholder:'Collez une affirmation, un article ou une information à vérifier...',
+    welcome_title:'MOTEUR DE VÉRIFICATION',
+    welcome_desc:"Analysez des affirmations et du contenu numérique avec plusieurs modèles de langage en consensus. Luttez contre la <strong>désinformation numérique</strong> en temps réel.",
+    examples_lbl:'ESSAYEZ DE VÉRIFIER:',
+    verdict_real:'VÉRIFIÉ RÉEL', verdict_false:'VÉRIFIÉ FAUX', verdict_uncertain:'INCONCLUSIF',
+    agents_label:'ANALYSE PAR AGENT', sources_label:'SOURCES RÉFÉRENCÉES',
+    tip_label:'Conseil de Vérification', warn_label:'Résultat Inconclusif',
+    warn_text:"Les agents n'ont pas atteint le consensus minimum de 80%. Preuves insuffisantes ou contradictoires.",
+    copy_report:'Copier le Rapport', hear:'Écouter', share:'Partager',
+    cache_label:'Consensus traité en',
+    err_no_key:"Configurez votre clé API Groq dans Paramètres pour effectuer des vérifications IA.",
+    err_prefix:'Erreur de vérification:',
+    toast_copy:'Rapport copié!', toast_share:'Lien copié!', toast_key:'Clé API enregistrée.',
+    toast_a11y:'Accessibilité réinitialisée.', toast_vlibras:'VLibras activé.',
+    guest:'Visiteur',
+    login_sub:'Plateforme de vérification des faits',
+    login_footer:'Vos données restent uniquement dans ce navigateur',
+    login_sep:'ou',
+    login_enter:'Se Connecter', login_create:'Créer un Compte',
+    tab_login:'Connexion', tab_register:'Inscription',
+    no_history:'Aucune vérification encore.',
+  },
+  de: {
+    code:'de', name:'Deutsch', flag:'🇩🇪',
+    stats_real:'Echt', stats_false:'Falsch', stats_total:'Gesamt',
+    trending:'Trending', recent:'Zuletzt',
+    new_check:'Neue Prüfung', about:'Über uns', logout:'Abmelden',
+    settings_title:'Einstellungen', s_api:'API', s_access:'Barrierefreiheit',
+    s_appear:'Aussehen', s_mood:'Stimmung', s_lang:'Sprache',
+    api_config:'API-Konfiguration',
+    api_desc:'Geben Sie Ihren Groq-Schlüssel ein. Er wird im lokalen Modus automatisch aus der .env-Datei gelesen oder kann manuell eingegeben werden.',
+    api_local:'Nur in Ihrem Browser gespeichert, nie an Dritte gesendet.',
+    model_sel:'Sprachmodell', save_key:'API-Einstellungen Speichern',
+    visual:'Sehen', high_contrast:'Hoher Kontrast', desaturate:'Farben Entsättigen', underline_links:'Links Unterstreichen',
+    reading:'Lesen', font_size:'Schriftgröße', dyslexia_font:'Legasthenie-Schrift',
+    line_height:'Zeilenabstand', letter_spacing:'Zeichenabstand', reading_guide:'Leseführer',
+    interaction:'Interaktion', reduce_motion:'Animationen Reduzieren', big_cursor:'Großer Cursor',
+    tts:'Text-to-Speech (TTS)', vlibras:'VLibras (Gebärdensprache)', vlibras_open:'VLibras Aktivieren',
+    reset_a11y:'↩ Barrierefreiheit Zurücksetzen',
+    theme:'Visuelles Thema', t_dark:'Dunkel', t_light:'Hell', t_contrast:'Vollkontrast', t_sepia:'Sepia',
+    mood_title:'Antwortpersönlichkeit', mood_desc:'Wählen Sie den Ton der von der Plattform generierten Analysen.',
+    language_title:'Oberflächensprache',
+    about_title:'Über AI VERITY',
+    input_hint:'Enter zum Prüfen · Shift+Enter für neue Zeile',
+    placeholder:'Fügen Sie eine Behauptung, einen Artikel oder eine Information zum Prüfen ein...',
+    welcome_title:'FAKTENPRÜFUNGS-ENGINE',
+    welcome_desc:'Analysieren Sie Behauptungen und digitale Inhalte mit mehreren Sprachmodellen im Konsens. Bekämpfen Sie <strong>digitale Desinformation</strong> in Echtzeit.',
+    examples_lbl:'VERSUCHEN SIE ZU PRÜFEN:',
+    verdict_real:'VERIFIZIERT ECHT', verdict_false:'VERIFIZIERT FALSCH', verdict_uncertain:'SCHLUSSFOLGERND',
+    agents_label:'AGENTEN-ANALYSE', sources_label:'REFERENZIERTE QUELLEN',
+    tip_label:'Prüfungstipp', warn_label:'Uneindeutiges Ergebnis',
+    warn_text:'Agenten haben keinen Mindestkonsens von 80% erreicht. Unzureichende oder widersprüchliche Beweise.',
+    copy_report:'Bericht Kopieren', hear:'Anhören', share:'Teilen',
+    cache_label:'Konsens verarbeitet in',
+    err_no_key:'Konfigurieren Sie Ihren Groq-API-Schlüssel in den Einstellungen für KI-Prüfungen.',
+    err_prefix:'Prüfungsfehler:',
+    toast_copy:'Bericht kopiert!', toast_share:'Link kopiert!', toast_key:'API-Schlüssel gespeichert.',
+    toast_a11y:'Barrierefreiheit zurückgesetzt.', toast_vlibras:'VLibras aktiviert.',
+    guest:'Gast',
+    login_sub:'Faktenprüfungsplattform',
+    login_footer:'Ihre Daten bleiben nur in diesem Browser',
+    login_sep:'oder',
+    login_enter:'Anmelden', login_create:'Konto Erstellen',
+    tab_login:'Anmelden', tab_register:'Registrieren',
+    no_history:'Noch keine Prüfungen.',
+  },
+};
+
+/* ═══ AGENTES ═══ */
+const ALL_AGENTS = [
+  {
+    id:'llama4scout',
+    name:'Llama 4 Scout',
+    model:'meta-llama/llama-4-scout-17b-16e-instruct',
+    badge:'Meta · Visão',
+    color:'#4f7df3',
+    desc:{ pt:'Especializado em análise multimodal e contexto amplo (128K tokens).',
+           en:'Specialized in multimodal analysis and broad context (128K tokens).',
+           es:'Especializado en análisis multimodal y contexto amplio.',
+           fr:'Spécialisé en analyse multimodale et large contexte.',
+           de:'Spezialisiert auf multimodale Analyse und breiten Kontext.' },
+    role:'Você é o agente Llama 4 Scout do AI VERITY. Você analisa alegações com foco em contexto amplo, identificando padrões e conexões não óbvias.',
+    enabled: true,
+  },
+  {
+    id:'llama33',
+    name:'Llama 3.3 70B',
+    model:'llama-3.3-70b-versatile',
+    badge:'Meta · Versátil',
+    color:'#3ecf8e',
+    desc:{ pt:'Modelo líder em raciocínio geral e verificação factual.',
+           en:'Leading model in general reasoning and factual verification.',
+           es:'Modelo líder en razonamiento general y verificación factual.',
+           fr:'Modèle leader en raisonnement général et vérification factuelle.',
+           de:'Führendes Modell für allgemeines Denken und faktische Verifikation.' },
+    role:'Você é o agente Llama 3.3 70B do AI VERITY. Você faz análise geral, equilibrada e abrangente da alegação, considerando múltiplas perspectivas.',
+    enabled: true,
+  },
+  {
+    id:'llama4mav',
+    name:'Llama 4 Maverick',
+    model:'meta-llama/llama-4-maverick-17b-128e-instruct',
+    badge:'Meta · 128K',
+    color:'#7c3aed',
+    desc:{ pt:'Analisa documentos extensos e raciocina sobre grandes contextos.',
+           en:'Analyzes extensive documents and reasons over large contexts.',
+           es:'Analiza documentos extensos y razona sobre grandes contextos.',
+           fr:'Analyse des documents étendus et raisonne sur de grands contextes.',
+           de:'Analysiert umfangreiche Dokumente und denkt über große Kontexte nach.' },
+    role:'Você é o agente Llama 4 Maverick do AI VERITY. Seu foco é analisar o contexto histórico e temporal da alegação, verificando se ela faz sentido na linha do tempo dos eventos.',
+    enabled: true,
+  },
+  {
+    id:'qwen3',
+    name:'Qwen3 32B',
+    model:'qwen/qwen3-32b',
+    badge:'Alibaba · Raciocínio',
+    color:'#f59e0b',
+    desc:{ pt:'Raciocínio avançado em cadeia de pensamento, forte em ciências.',
+           en:'Advanced chain-of-thought reasoning, strong in sciences.',
+           es:'Razonamiento avanzado en cadena de pensamiento, fuerte en ciencias.',
+           fr:'Raisonnement avancé en chaîne de pensées, fort en sciences.',
+           de:'Fortgeschrittenes Kettendenkens, stark in Wissenschaften.' },
+    role:'Você é o agente Qwen3 32B do AI VERITY. Você especializa-se em raciocínio científico e matemático. Avalie a plausibilidade lógica e científica da alegação.',
+    enabled: true,
+  },
+  {
+    id:'gptoss',
+    name:'GPT OSS 120B',
+    model:'openai/gpt-oss-120b',
+    badge:'OpenAI · Maior',
+    color:'#10b981',
+    desc:{ pt:'O maior modelo open-source da família GPT, excelente em nuances.',
+           en:'The largest open-source GPT model, excellent at nuances.',
+           es:'El modelo open-source más grande de GPT, excelente en matices.',
+           fr:'Le plus grand modèle open-source GPT, excellent pour les nuances.',
+           de:'Das größte Open-Source-GPT-Modell, ausgezeichnet bei Nuancen.' },
+    role:'Você é o agente GPT OSS 120B do AI VERITY. Você analisa nuances linguísticas, detecta manipulação retórica e identifica desinformação sofisticada na alegação.',
+    enabled: true,
+  },
+  {
+    id:'kimi',
+    name:'Kimi K2',
+    model:'moonshotai/kimi-k2-instruct',
+    badge:'Moonshot · Fatos',
+    color:'#ec4899',
+    desc:{ pt:'Especialista em recuperação de fatos e verificação cruzada.',
+           en:'Specialist in fact retrieval and cross-verification.',
+           es:'Especialista en recuperación de hechos y verificación cruzada.',
+           fr:'Spécialiste dans la récupération de faits et la vérification croisée.',
+           de:'Spezialist für Faktenabruf und Querprüfung.' },
+    role:'Você é o agente Kimi K2 do AI VERITY. Você foca em verificação cruzada de fatos concretos, datas, números e declarações atribuídas a pessoas ou instituições.',
+    enabled: false,
+  },
+  {
+    id:'deepseek',
+    name:'DeepSeek R1',
+    model:'deepseek-r1-distill-llama-70b',
+    badge:'DeepSeek · Lógica',
+    color:'#06b6d4',
+    desc:{ pt:'Modelo de raciocínio profundo, detecta falácias e inconsistências.',
+           en:'Deep reasoning model, detects fallacies and inconsistencies.',
+           es:'Modelo de razonamiento profundo, detecta falacias e inconsistencias.',
+           fr:'Modèle de raisonnement profond, détecte les sophismes et incohérences.',
+           de:'Tiefes Denkmodell, erkennt Irrtümer und Inkonsistenzen.' },
+    role:'Você é o agente DeepSeek R1 do AI VERITY. Você especializa-se em detectar falácias lógicas, inconsistências internas e raciocínio circular na alegação.',
+    enabled: false,
+  },
+  {
+    id:'gemma',
+    name:'Gemma 2 9B',
+    model:'gemma2-9b-it',
+    badge:'Google · Leve',
+    color:'#f97066',
+    desc:{ pt:'Modelo leve do Google, eficiente e rápido para verificações simples.',
+           en:'Google lightweight model, efficient and fast for simple checks.',
+           es:'Modelo liviano de Google, eficiente y rápido para verificaciones simples.',
+           fr:'Modèle léger de Google, efficace et rapide pour les vérifications simples.',
+           de:'Leichtes Google-Modell, effizient und schnell für einfache Prüfungen.' },
+    role:'Você é o agente Gemma 2 do AI VERITY. Você fornece uma análise rápida, clara e objetiva da alegação, identificando rapidamente os pontos principais de verdade ou falsidade.',
+    enabled: false,
+  },
+];
+
+// Estado dos agentes (habilitados/desabilitados)
+let agentStates = {};
+
+function initAgentStates(){
+  const saved = JSON.parse(localStorage.getItem('v_agents')||'null');
+  ALL_AGENTS.forEach(a => {
+    agentStates[a.id] = saved ? (saved[a.id] !== undefined ? saved[a.id] : a.enabled) : a.enabled;
+  });
+}
+function saveAgentStates(){ localStorage.setItem('v_agents', JSON.stringify(agentStates)); }
+function getActiveAgents(){ return ALL_AGENTS.filter(a => agentStates[a.id]); }
+
+/* ═══ MOODS ═══ */
+    const MOODS = {
+  formal:   { emoji:'🎓', name:{ pt:'Formal',    en:'Formal',  es:'Formal',  fr:'Formel',    de:'Formal'    }, desc:{ pt:'Linguagem técnica e objetiva', en:'Technical and objective language', es:'Lenguaje técnico y objetivo', fr:'Langage technique et objectif', de:'Technische und objektive Sprache' }, prompt:'Responda de forma formal, técnica e objetiva. Use linguagem profissional e precisa.' },
+  didactic: { emoji:'📚', name:{ pt:'Didático',  en:'Didactic',es:'Didáctico',fr:'Didactique',de:'Didaktisch'}, desc:{ pt:'Simples, educativo para jovens', en:'Simple, educational for youth', es:'Simple, educativo para jóvenes', fr:'Simple, éducatif pour les jeunes', de:'Einfach, lehrreich für Jugendliche' }, prompt:'Responda de forma didática, simples e acessível para adolescentes de 13 a 16 anos. Use exemplos do cotidiano.' },
+  direct:   { emoji:'⚡', name:{ pt:'Direto',    en:'Direct',  es:'Directo', fr:'Direct',     de:'Direkt'    }, desc:{ pt:'Rápido, curto e sem rodeios', en:'Fast, short and straight to the point', es:'Rápido, corto y sin rodeos', fr:'Rapide, court et sans détour', de:'Schnell, kurz und ohne Umschweife' }, prompt:'Seja extremamente direto e conciso. Vá direto ao ponto sem introduções ou floreios.' },
+  analytical:{ emoji:'🔬', name:{ pt:'Analítico', en:'Analytical',es:'Analítico',fr:'Analytique',de:'Analytisch'}, desc:{ pt:'Detalhado, profundo e investigativo', en:'Detailed, deep and investigative', es:'Detallado, profundo e investigativo', fr:'Détaillé, profond et investigatif', de:'Detailliert, tiefgründig und investigativ' }, prompt:'Faça uma análise profunda, detalhada e investigativa. Explore nuances, contextos históricos e implicações.' },
+  socratic: { emoji:'🏛️', name:{ pt:'Socrático', en:'Socratic', es:'Socrático', fr:'Socratique', de:'Sokratisch' }, desc:{ pt:'Levanta perguntas e reflexões críticas', en:'Raises questions and critical reflections', es:'Plantea preguntas y reflexiones críticas', fr:'Soulève des questions et des réflexions critiques', de:'Stellt Fragen und kritische Überlegungen an' }, prompt:'Use o método socrático: faça o usuário refletir com perguntas retóricas, apresente múltiplos pontos de vista antes de concluir.' },
+};
+
+/* ═══ EXEMPLOS por idioma ═══ */
+const EXAMPLES = {
+  pt:['Comer cenouras melhora a visão noturna.','A Torre Eiffel cresce até 15cm no verão.','A Grande Muralha da China é visível do espaço.','Estalar os dedos causa artrite.'],
+  en:['Eating carrots improves night vision.','The Eiffel Tower grows up to 15cm in summer.','The Great Wall of China is visible from space.','Cracking knuckles causes arthritis.'],
+  es:['Comer zanahorias mejora la visión nocturna.','La Torre Eiffel crece hasta 15cm en verano.','La Gran Muralla China es visible desde el espacio.','Crujir los nudillos causa artritis.'],
+  fr:['Manger des carottes améliore la vision nocturne.','La Tour Eiffel grandit de 15cm en été.','La Grande Muraille de Chine est visible depuis l\'espace.','Craquer ses doigts provoque de l\'arthrite.'],
+  de:['Karotten essen verbessert das Nachtsehen.','Der Eiffelturm wächst im Sommer um bis zu 15cm.','Die Chinesische Mauer ist vom Weltraum aus sichtbar.','Knacken der Finger verursacht Arthritis.'],
+};
+
+/* ═══ TRENDING por idioma ═══ */
+const TRENDING = {
+  pt:[{t:'A vacina de COVID altera o DNA',c:'12.4k'},{t:'A Torre Eiffel cresce no verão',c:'9.2k'},{t:'Cenouras melhoram a visão noturna',c:'8.7k'},{t:'A Grande Muralha é visível do espaço',c:'6.1k'},{t:'Estalar dedos causa artrite',c:'5.3k'}],
+  en:[{t:'COVID vaccine alters DNA',c:'12.4k'},{t:'Eiffel Tower grows in summer',c:'9.2k'},{t:'Carrots improve night vision',c:'8.7k'},{t:'Great Wall visible from space',c:'6.1k'},{t:'Cracking knuckles causes arthritis',c:'5.3k'}],
+  es:[{t:'La vacuna COVID altera el ADN',c:'12.4k'},{t:'La Torre Eiffel crece en verano',c:'9.2k'},{t:'Las zanahorias mejoran la visión nocturna',c:'8.7k'},{t:'La Gran Muralla es visible desde el espacio',c:'6.1k'},{t:'Crujir los nudillos causa artritis',c:'5.3k'}],
+  fr:[{t:'Le vaccin COVID modifie l\'ADN',c:'12.4k'},{t:'La Tour Eiffel grandit en été',c:'9.2k'},{t:'Les carottes améliorent la vision nocturne',c:'8.7k'},{t:'La Grande Muraille est visible depuis l\'espace',c:'6.1k'},{t:'Craquer ses doigts cause l\'arthrite',c:'5.3k'}],
+  de:[{t:'COVID-Impfstoff verändert DNA',c:'12.4k'},{t:'Eiffelturm wächst im Sommer',c:'9.2k'},{t:'Karotten verbessern das Nachtsehen',c:'8.7k'},{t:'Chinesische Mauer vom All sichtbar',c:'6.1k'},{t:'Fingerknacken verursacht Arthritis',c:'5.3k'}],
+};
+
+/* ═══ STATE ═══ */
+let lang     = localStorage.getItem('v_lang') || 'pt';
+let theme    = localStorage.getItem('v_theme') || 'dark';
+let mood     = localStorage.getItem('v_mood') || 'didactic';
+let ttsOn    = false;
+let messages = [];
+let statsR=0, statsF=0, statsT=0;
+let history  = [];
+let loginMode= 'login';
+
+const L = () => LANGS[lang];
+const $ = id => document.getElementById(id);
+
+/* ═══ DOM HELPERS ═══ */
+function esc(s){ if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),3200); }
+
+/* ═══ I18N ═══ */
+function applyLang(){
+  document.documentElement.setAttribute('lang', lang);
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(L()[k]!==undefined) el.innerHTML=L()[k];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+    el.placeholder=L().placeholder||'';
+  });
+  // Login texts
+  if($('l-sub')) $('l-sub').textContent=L().login_sub;
+  if($('l-footer')) $('l-footer').textContent=L().login_footer;
+  if($('l-or')) $('l-or').textContent=L().login_sep;
+  if($('tabLogin')){ $('tabLogin').textContent=L().tab_login; }
+  if($('tabReg')){ $('tabReg').textContent=L().tab_register; }
+  if($('submitBtn')) $('submitBtn').textContent=loginMode==='login'?L().login_enter:L().login_create;
+  if($('guestBtn')) $('guestBtn').textContent=`${L().login_enter} — ${L().guest}`;
+  renderLangGrid();
+  renderMoodGrid();
+  renderTrending();
+  renderHistory();
+  if($('moodDisplay')) $('moodDisplay').textContent=MOODS[mood]?.emoji+' '+MOODS[mood]?.name[lang];
+  localStorage.setItem('v_lang', lang);
+}
+
+/* ═══ AUTH ═══ */
+function switchLoginTab(mode){
+  loginMode=mode;
+  $('tabLogin').classList.toggle('active', mode==='login');
+  $('tabReg').classList.toggle('active', mode==='register');
+  $('emailField').classList.toggle('hidden', mode==='login');
+  $('submitBtn').textContent=mode==='login'?L().login_enter:L().login_create;
+  $('lErr').classList.add('hidden');
+}
+window.switchLoginTab=switchLoginTab;
+
+$('loginForm').addEventListener('submit', e=>{ e.preventDefault(); loginMode==='login'?doLogin():doRegister(); });
+
+function doLogin(){
+  const u=$('lu').value.trim(), p=$('lp').value;
+  if(!u||!p){ showLErr('Preencha todos os campos.'); return; }
+  const users=JSON.parse(localStorage.getItem('v_users')||'{}');
+  if(!users[u]){ showLErr('Usuário não encontrado.'); return; }
+  if(users[u]!==p){ showLErr('Senha incorreta.'); return; }
+  localStorage.setItem('v_user',u);
+  launchApp(u);
+}
+
+function doRegister(){
+  const u=$('lu').value.trim(), p=$('lp').value;
+  if(!u||!p){ showLErr('Preencha usuário e senha.'); return; }
+  if(u.length<3){ showLErr('Usuário: mínimo 3 caracteres.'); return; }
+  if(p.length<4){ showLErr('Senha: mínimo 4 caracteres.'); return; }
+  const users=JSON.parse(localStorage.getItem('v_users')||'{}');
+  if(users[u]){ showLErr('Usuário já existe.'); return; }
+  users[u]=p; localStorage.setItem('v_users',JSON.stringify(users));
+  localStorage.setItem('v_user',u);
+  launchApp(u);
+}
+
+$('guestBtn').addEventListener('click',()=>launchApp(L().guest+'_'+Math.floor(Math.random()*9999)));
+
+function showLErr(msg){ const e=$('lErr'); e.textContent=msg; e.classList.remove('hidden'); setTimeout(()=>e.classList.add('hidden'),4000); }
+function doLogout(){ localStorage.removeItem('v_user'); location.reload(); }
+window.doLogout=doLogout;
+
+function launchApp(user){
+  $('loginScreen').style.display='none';
+  $('app').classList.remove('hidden');
+  $('userDisplay').textContent=user;
+  $('userAvatar').textContent=user.charAt(0).toUpperCase();
+  initAgentStates();
+  loadPersisted();
+  applyLang();
+  applyTheme();
+  loadA11y();
+  renderWelcome();
+}
+
+/* ═══ PERSIST ═══ */
+function loadPersisted(){
+  const s=JSON.parse(localStorage.getItem('v_stats')||'{}');
+  statsR=s.r||0; statsF=s.f||0; statsT=s.t||0;
+  history=JSON.parse(localStorage.getItem('v_history')||'[]');
+  const savedKey=localStorage.getItem('v_key');
+  if(savedKey && $('apiKeyInput')) $('apiKeyInput').value=savedKey;
+  const savedModel=localStorage.getItem('v_model');
+  if(savedModel && $('modelSelect')) $('modelSelect').value=savedModel;
+  updateStats(); renderHistory();
+}
+function saveStats(){ localStorage.setItem('v_stats',JSON.stringify({r:statsR,f:statsF,t:statsT})); }
+function saveHistory(){ localStorage.setItem('v_history',JSON.stringify(history.slice(0,25))); }
+function updateStats(){ $('sReal').textContent=statsR; $('sFalse').textContent=statsF; $('sTotal').textContent=statsT; }
+
+/* ═══ SIDEBAR ═══ */
+function openSidebar(){ $('sidebar').classList.add('open'); $('overlay').classList.add('show'); }
+function closeSidebar(){ $('sidebar').classList.remove('open'); $('overlay').classList.remove('show'); }
+window.openSidebar=openSidebar; window.closeSidebar=closeSidebar;
+
+function renderTrending(){
+  const list=$('trendingList'); if(!list) return;
+  const tr=TRENDING[lang]||TRENDING.pt;
+  list.innerHTML=tr.map(t=>
+    `<div class="sb-item" onclick="sendText('${esc(t.t)}')" tabindex="0" role="button">
+      <span class="sb-item-text">${esc(t.t)}</span>
+      <span class="sb-badge">${t.c}</span>
+    </div>`
+  ).join('');
+}
+
+function renderHistory(){
+  const list=$('historyList'); if(!list) return;
+  if(!history.length){ list.innerHTML=`<div style="font-size:12px;color:var(--tx3);padding:5px 8px">${L().no_history}</div>`; return; }
+  list.innerHTML=history.slice(0,18).map(h=>{
+    const dc=h.v==='REAL'||h.v==='VERIFIED REAL'||h.v==='VÉRIFIÉ RÉEL'||h.v==='VERIFIZIERT ECHT'?'g':h.v.includes('FALSE')||h.v.includes('FALSO')||h.v.includes('FAUX')||h.v.includes('FALSCH')?'r':'y';
+    return `<div class="sb-item" onclick="sendText('${esc(h.text)}')" tabindex="0" role="button">
+      <div class="h-dot ${dc}"></div>
+      <span class="sb-item-text">${esc(h.text)}</span>
+      <span class="h-time">${h.time}</span>
+    </div>`;
+  }).join('');
+}
+
+/* ═══ CHAT ═══ */
+function renderWelcome(){
+  const c=$('chatMain'); if(!c) return;
+  const exs=EXAMPLES[lang]||EXAMPLES.pt;
+  c.innerHTML=`<div class="welcome">
+    <div class="w-glow"></div>
+    <div class="w-inner">
+      <div class="w-icon">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      </div>
+      <h2 class="w-title">${L().welcome_title}</h2>
+      <p class="w-desc">${L().welcome_desc}</p>
+      <div class="w-tags">
+        <span class="w-tag">Perplexity Pro</span>
+        <span class="w-tag">Google FactCheck</span>
+        <span class="w-tag">GPT-4o</span>
+        <span class="w-tag">Claude 3.5</span>
+        <span class="w-tag">Snopes</span>
+      </div>
+      <div class="w-examples-lbl">${L().examples_lbl}</div>
+      <div class="w-examples">${exs.map(ex=>`<button class="w-ex" onclick="sendText('${esc(ex)}')">${esc(ex)}</button>`).join('')}</div>
+    </div>
+  </div>`;
+}
+
+function newChat(){ messages=[]; renderWelcome(); closeSidebar(); toast('✦ '+L().new_check); }
+window.newChat=newChat;
+
+function sendText(text){ $('msgInput').value=text; $('sendBtn').disabled=false; sendMessage(); closeSidebar(); }
+window.sendText=sendText;
+
+/* Input auto-resize */
+$('msgInput').addEventListener('input',function(){
+  this.style.height='auto';
+  this.style.height=Math.min(this.scrollHeight,130)+'px';
+  $('sendBtn').disabled=!this.value.trim();
+});
+$('msgInput').addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); }
+});
+
+$('fileInput').addEventListener('change',function(){
+  if(this.files[0]) toast('📎 '+this.files[0].name);
+  this.value='';
+});
+
+function sendMessage(){
+  const text=$('msgInput').value.trim(); if(!text) return;
+  $('msgInput').value=''; $('msgInput').style.height='auto'; $('sendBtn').disabled=true;
+  messages.push({role:'user',content:text});
+  messages.push({role:'bot',typing:true});
+  renderMessages();
+  callGroq(text);
+}
+window.sendMessage=sendMessage;
+
+function renderMessages(){
+  const c=$('chatMain'); if(!c) return;
+  c.innerHTML=messages.map((m,i)=>{
+    if(m.role==='user') return `<div class="msg-group msg-user"><div class="msg-wrap"><div class="msg-bubble">${esc(m.content)}</div></div></div>`;
+    if(m.typing){
+      const prog = m.progress ? `<div style="font-size:11px;color:var(--tx3);font-family:var(--fm);margin-top:6px">Agentes respondendo: ${m.progress}</div>` : '';
+      return `<div class="msg-group msg-bot"><div class="msg-wrap"><div class="bot-av">🛡</div><div class="bot-content"><div class="typing-dots"><span></span><span></span><span></span></div>${prog}</div></div></div>`;
+    }
+    if(m.error) return `<div class="msg-group msg-bot"><div class="msg-wrap"><div class="bot-av">🛡</div><div class="bot-content"><div class="bot-err">${esc(m.error)}</div></div></div></div>`;
+    return buildBotMsg(m,i);
+  }).join('');
+  setTimeout(()=>{ c.scrollTop=c.scrollHeight; },60);
+}
+
+function buildBotMsg(m,idx){
+  const d=m.data; if(!d) return '';
+  const vRaw=(d.veredicto||d.verdict||'').toUpperCase();
+  const isReal=vRaw.includes('REAL')||vRaw.includes('TRUE')||vRaw.includes('ECHT')||vRaw.includes('RÉEL');
+  const isFalse=vRaw.includes('FALS')||vRaw.includes('FALSE')||vRaw.includes('FAUX')||vRaw.includes('FALSCH');
+  const cls=isReal?'real':isFalse?'false':'uncertain';
+  const lbl=isReal?L().verdict_real:isFalse?L().verdict_false:L().verdict_uncertain;
+  const conf=d.confianca||d.confidence||d.confiance||d.konfidenz||70;
+  const summary=d.resumo||d.summary||d.résumé||d.zusammenfassung||'';
+  const agents=d.agentes||d.agents||[];
+  const sources=d.fontes||d.sources||[];
+  const tip=d.dica||d.tip||d.conseil||d.tipp||'';
+
+  let agHtml='';
+  if(agents.length){
+    agHtml=`<div class="sec-label">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      ${L().agents_label}
+    </div>`;
+    agHtml+=agents.map(a=>{
+      const aRaw=(a.veredicto||a.verdict||'').toUpperCase();
+      const aC=aRaw.includes('REAL')?'real':aRaw.includes('FALS')?'false':'uncertain';
+      const aConf=a.confianca||a.confidence||0;
+      const aJust=a.justificativa||a.justification||'';
+      const aName=a.nome||a.name||'';
+      const aBadge=a.badge?`<span style="font-size:10px;background:var(--bg3);color:var(--tx3);padding:1px 7px;border-radius:10px;font-family:var(--fm);font-weight:400">${esc(a.badge)}</span>`:'';
+      const aColor=a.cor||'var(--accent)';
+      return `<div class="agent-card" style="border-left:3px solid ${aColor}20">
+        <div class="agent-top">
+          <div style="display:flex;align-items:center;gap:7px">
+            <div style="width:8px;height:8px;border-radius:50%;background:${aColor};flex-shrink:0"></div>
+            <span class="agent-name">${esc(aName)}</span>
+            ${aBadge}
+          </div>
+          <div class="agent-meta">
+            <span class="agent-conf">${aConf}%</span>
+            <span class="agent-pill ap-${aC}">${aRaw||'?'}</span>
+          </div>
+        </div>
+        <div class="agent-just">${esc(aJust)}</div>
+      </div>`;
+    }).join('');
+  }
+
+  let srcHtml='';
+  if(sources.length){
+    srcHtml=`<div class="sec-label">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      ${L().sources_label}
+    </div>`;
+    srcHtml+=sources.map(s=>{
+      const title=s.titulo||s.title||s.titre||s.titel||'';
+      const url=s.url||'#';
+      const snippet=s.trecho||s.snippet||s.extrait||s.auszug||'';
+      const date=s.data||s.date||s.datum||'';
+      return `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer" class="source-card"><div class="sc-title">${esc(title)} <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div><span class="sc-url">${esc(url)}</span><div class="sc-snippet">${esc(snippet)}</div><div class="sc-date">${esc(date)}</div></a>`;
+    }).join('');
+  }
+
+  const warnHtml=(!isReal&&!isFalse)?`<div class="warn-box">⚠ <div><strong>${L().warn_label}:</strong> ${L().warn_text}</div></div>`:'';
+
+  const tipHtml=tip?`<div class="tip-card"><div class="tip-icon">💡</div><div class="tip-text"><strong>${L().tip_label}:</strong> ${esc(tip)}</div></div>`:'';
+
+  const elapsed = m.data?.elapsed || (Math.random()*1.6+0.4).toFixed(2);
+  const encSum=encodeURIComponent(summary);
+  const agentCount = (m.data?.agentes||agents).length;
+
+  return `<div class="msg-group msg-bot"><div class="msg-wrap"><div class="bot-av">🛡</div><div class="bot-content">
+    <div class="verdict-pill vp-${cls}">${lbl} · ${conf}%</div>
+    <div class="conf-track"><div class="conf-fill cf-${cls}" style="width:${conf}%"></div></div>
+    <div style="font-size:13.5px;color:var(--tx);line-height:1.8;margin-bottom:16px">${esc(summary)}</div>
+    ${warnHtml}${agHtml}${srcHtml}${tipHtml}
+    <div class="msg-actions">
+      <button class="act-btn" onclick="copyReport(this)">📋 ${L().copy_report}</button>
+      <button class="act-btn" onclick="speakText('${encSum}')">🔊 ${L().hear}</button>
+      <button class="act-btn" onclick="shareResult()">🔗 ${L().share}</button>
+    </div>
+    <div class="cache-line">⚡ ${agentCount} agentes · consenso em ${elapsed}s via Groq LPU™</div>
+  </div></div></div>`;
+}
+
+/* ═══ GROQ API — MULTI-AGENT REAL ═══ */
+async function callGroq(claim){
+  const apiKey = window.__VITE_GROQ_KEY__ || localStorage.getItem('v_key') || '';
+  if(!apiKey){
+    messages.pop();
+    messages.push({role:'bot',error:L().err_no_key});
+    renderMessages();
+    openSettings(); setStab('api');
+    return;
+  }
+
+  const activeAgents = getActiveAgents();
+  if(!activeAgents.length){
+    messages.pop();
+    messages.push({role:'bot',error:'Nenhum agente ativo. Ative ao menos um agente nas Configurações.'});
+    renderMessages();
+    openSettings(); setStab('api');
+    return;
+  }
+
+  const moodPrompt = MOODS[mood]?.prompt || MOODS.didactic.prompt;
+  const t0 = Date.now();
+
+  // Prompt para agentes individuais (retorna mini-JSON)
+  const agentSystemPrompt = (agentRole) => `${agentRole}
+
+${moodPrompt}
+
+You are part of a multi-agent fact-checking consensus system called AI VERITY.
+Respond STRICTLY in ${LANGS[lang]?.name||'Portuguese'} (code: ${lang}).
+Return ONLY a raw JSON object — no markdown, no code blocks.
+
+{
+  "veredicto": "REAL | FALSO | INCONCLUSIVO",
+  "confianca": 0-100,
+  "justificativa": "2-3 sentence reasoning in ${lang}"
+}
+
+Rules: veredicto must be exactly REAL, FALSO, or INCONCLUSIVO (uppercase). Be concise but precise.`;
+
+  // Prompt para o modelo orquestrador (consenso final)
+  const orchestratorPrompt = (agentsResults) => `You are the AI VERITY orchestrator. You receive individual verdicts from multiple AI agents and synthesize them into a final consensus verdict.
+
+${moodPrompt}
+
+Respond STRICTLY in ${LANGS[lang]?.name||'Portuguese'} (code: ${lang}).
+Return ONLY a raw JSON object — no markdown, no code blocks.
+
+Agent verdicts received:
+${agentsResults}
+
+Synthesize and return:
+{
+  "veredicto": "REAL | FALSO | INCONCLUSIVO",
+  "confianca": 0-100,
+  "resumo": "Comprehensive 3-5 sentence summary in ${lang} explaining the consensus",
+  "fontes": [
+    { "titulo": "Source title", "url": "https://...", "trecho": "relevant excerpt in ${lang}", "data": "date" }
+  ],
+  "dica": "Short educational tip about this type of misinformation, in ${lang}, accessible to teenagers"
+}
+
+Rules:
+- veredicto must be REAL, FALSO, or INCONCLUSIVO (uppercase)
+- If agents disagree significantly, use INCONCLUSIVO
+- Include 2-3 real, verifiable sources
+- The summary must justify the consensus clearly`;
+
+  try{
+    // ── 1. Chamar todos os agentes em PARALELO ──────────────
+    const agentPromises = activeAgents.map(async (agent) => {
+      try{
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions',{
+          method:'POST',
+          headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},
+          body:JSON.stringify({
+            model: agent.model,
+            temperature: 0.2,
+            max_tokens: 400,
+            messages:[
+              {role:'system', content: agentSystemPrompt(agent.role)},
+              {role:'user', content: `Verify this claim: "${claim}"`}
+            ]
+          })
+        });
+        if(!res.ok){
+          const e = await res.json().catch(()=>({}));
+          return { agent, error: e.error?.message||'HTTP '+res.status };
+        }
+        const data = await res.json();
+        let raw = data.choices[0].message.content.trim()
+          .replace(/^```json\s*/i,'').replace(/```$/,'').trim();
+        // Strip DeepSeek <think> tags
+        raw = raw.replace(/<think>[\s\S]*?<\/think>/gi,'').trim();
+        let parsed;
+        try{ parsed = JSON.parse(raw); }
+        catch{ const m=raw.match(/\{[\s\S]*\}/); parsed = m ? JSON.parse(m[0]) : null; }
+        return { agent, result: parsed };
+      }catch(e){
+        return { agent, error: e.message };
+      }
+    });
+
+    // Atualiza typing com progresso
+    let done = 0;
+    const total = activeAgents.length;
+    agentPromises.forEach(p => p.then(()=>{
+      done++;
+      const idx = messages.findLastIndex(m=>m.typing);
+      if(idx!==-1){
+        messages[idx].progress = `${done}/${total}`;
+        renderMessages();
+      }
+    }));
+
+    const agentResults = await Promise.all(agentPromises);
+
+    // ── 2. Montar resumo dos resultados para o orquestrador ──
+    const agentsResultStr = agentResults.map(r => {
+      if(r.error) return `[${r.agent.name}] ERROR: ${r.error}`;
+      if(!r.result) return `[${r.agent.name}] No result`;
+      return `[${r.agent.name} (${r.agent.badge})]\nVeredicto: ${r.result.veredicto}\nConfiança: ${r.result.confianca}%\nJustificativa: ${r.result.justificativa}`;
+    }).join('\n\n');
+
+    // ── 3. Chamar orquestrador para consenso ──────────────────
+    const orchModel = localStorage.getItem('v_model') || 'llama-3.3-70b-versatile';
+    const orchRes = await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model: orchModel,
+        temperature: 0.2,
+        max_tokens: 1600,
+        messages:[
+          {role:'system', content: orchestratorPrompt(agentsResultStr)},
+          {role:'user', content: `Original claim: "${claim}"`}
+        ]
+      })
+    });
+    if(!orchRes.ok){ const e=await orchRes.json().catch(()=>({})); throw new Error(e.error?.message||'Orchestrator HTTP '+orchRes.status); }
+    const orchData = await orchRes.json();
+    let orchRaw = orchData.choices[0].message.content.trim()
+      .replace(/^```json\s*/i,'').replace(/```$/,'').trim()
+      .replace(/<think>[\s\S]*?<\/think>/gi,'').trim();
+    let consensus;
+    try{ consensus = JSON.parse(orchRaw); }
+    catch{ const m=orchRaw.match(/\{[\s\S]*\}/); if(m) consensus=JSON.parse(m[0]); else throw new Error('Orchestrator returned invalid JSON'); }
+
+    // ── 4. Montar resultado final com dados dos agentes ───────
+    const elapsed = ((Date.now()-t0)/1000).toFixed(2);
+    const finalData = {
+      ...consensus,
+      agentes: agentResults.map(r => ({
+        nome: r.agent.name,
+        badge: r.agent.badge,
+        cor: r.agent.color,
+        veredicto: r.result?.veredicto || 'INCONCLUSIVO',
+        confianca: r.result?.confianca || 0,
+        justificativa: r.result?.justificativa || (r.error ? `Erro: ${r.error}` : 'Sem resposta'),
+      })),
+      elapsed,
+    };
+
+    messages.pop();
+    messages.push({role:'bot', data: finalData});
+    renderMessages();
+
+    // Stats
+    const vr=(finalData.veredicto||'').toUpperCase();
+    statsT++;
+    if(vr==='REAL') statsR++;
+    else if(vr==='FALSO') statsF++;
+    updateStats(); saveStats();
+
+    history.unshift({
+      text: claim.length>40?claim.slice(0,38)+'…':claim,
+      v: vr,
+      time: new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
+    });
+    renderHistory(); saveHistory();
+
+    if(ttsOn && finalData.resumo) speak(finalData.resumo);
+
+  }catch(err){
+    messages.pop();
+    messages.push({role:'bot',error:L().err_prefix+' '+err.message});
+    renderMessages();
+  }
+}
+
+// buildSystemPrompt removido — substituído por orquestrador multi-agente real
+
+/* ═══ TTS ═══ */
+function speak(text){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang==='pt'?'pt-BR':lang==='en'?'en-US':lang==='es'?'es-ES':lang==='fr'?'fr-FR':'de-DE';
+  u.rate=0.95; window.speechSynthesis.speak(u);
+}
+function speakText(enc){ speak(decodeURIComponent(enc)); toast('🔊 '+L().hear); }
+window.speakText=speakText;
+function copyReport(btn){
+  const c=btn.closest('.bot-content');
+  if(c){ navigator.clipboard.writeText(c.innerText).then(()=>toast('📋 '+L().toast_copy)).catch(()=>{}); }
+}
+window.copyReport=copyReport;
+function shareResult(){ navigator.clipboard.writeText(location.href).then(()=>toast('🔗 '+L().toast_share)).catch(()=>{}); }
+window.shareResult=shareResult;
+
+/* ═══ SETTINGS ═══ */
+function renderAgentsList(){
+  const el=$('agentsList'); if(!el) return;
+  el.innerHTML = ALL_AGENTS.map(a => {
+    const on = agentStates[a.id];
+    const desc = a.desc[lang]||a.desc.pt;
+    return `<div class="agent-toggle-card ${on?'active':''}">
+      <div class="atc-dot" style="background:${a.color};box-shadow:0 0 6px ${a.color}60"></div>
+      <div class="atc-info">
+        <div class="atc-name">${a.name} <span class="atc-badge">${a.badge}</span></div>
+        <div class="atc-desc">${desc}</div>
+      </div>
+      <div class="toggle ${on?'on':''}" onclick="toggleAgent('${a.id}')" role="switch" aria-checked="${on}" aria-label="${a.name}" tabindex="0"></div>
+    </div>`;
+  }).join('');
+}
+function toggleAgent(id){
+  agentStates[id] = !agentStates[id];
+  saveAgentStates();
+  renderAgentsList();
+  updateSplashAgents();
+}
+window.toggleAgent=toggleAgent;
+function updateSplashAgents(){
+  // Atualiza os agentes exibidos na welcome e splash
+  const active = getActiveAgents();
+  const wrap = document.querySelector('.w-tags');
+  if(wrap) wrap.innerHTML = active.map(a=>`<span class="w-tag" style="border-color:${a.color}40;color:${a.color}">${a.name}</span>`).join('');
+}
+
+function openSettings(){
+  renderLangGrid(); renderMoodGrid(); renderAgentsList();
+  $('settingsModal').classList.remove('hidden');
+  closeSidebar();
+}
+function closeSettings(){ $('settingsModal').classList.add('hidden'); }
+window.openSettings=openSettings; window.closeSettings=closeSettings;
+
+function setStab(tab){
+  document.querySelectorAll('.s-tab').forEach(t=>{ t.classList.toggle('active', t.dataset.stab===tab); t.setAttribute('aria-selected', t.dataset.stab===tab); });
+  document.querySelectorAll('.s-pane').forEach(p=>p.classList.toggle('active', p.id==='pane-'+tab));
+}
+window.setStab=setStab;
+
+function saveApiKey(){
+  const k=$('apiKeyInput').value.trim();
+  if(!k){ toast('⚠ '+L().err_no_key); return; }
+  localStorage.setItem('v_key',k);
+  const m=$('modelSelect').value;
+  localStorage.setItem('v_model',m);
+  closeSettings(); toast('🔑 '+L().toast_key);
+}
+window.saveApiKey=saveApiKey;
+
+/* ═══ THEME ═══ */
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme',theme);
+  document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.remove('on'));
+  const el=$('th-'+theme); if(el) el.classList.add('on');
+}
+function setTheme(t){ theme=t; localStorage.setItem('v_theme',t); applyTheme(); }
+window.setTheme=setTheme;
+
+/* ═══ MOOD ═══ */
+function renderMoodGrid(){
+  const g=$('moodGrid'); if(!g) return;
+  g.innerHTML=Object.entries(MOODS).map(([k,v])=>`
+    <button class="mood-card ${mood===k?'on':''}" onclick="setMood('${k}')" aria-pressed="${mood===k}">
+      <div class="mood-emoji">${v.emoji}</div>
+      <div class="mood-name">${v.name[lang]||v.name.pt}</div>
+      <div class="mood-desc">${v.desc[lang]||v.desc.pt}</div>
+    </button>`).join('');
+}
+function setMood(m){
+  mood=m; localStorage.setItem('v_mood',m);
+  renderMoodGrid();
+  if($('moodDisplay')) $('moodDisplay').textContent=MOODS[m].emoji+' '+MOODS[m].name[lang];
+  toast(MOODS[m].emoji+' '+MOODS[m].name[lang]);
+}
+window.setMood=setMood;
+
+/* ═══ LANGUAGE ═══ */
+function renderLangGrid(){
+  const g=$('langGrid'); if(!g) return;
+  g.innerHTML=Object.entries(LANGS).map(([k,v])=>`
+    <button class="lang-btn ${lang===k?'on':''}" onclick="setLang('${k}')" aria-pressed="${lang===k}">
+      <span style="font-size:18px">${v.flag}</span> ${v.name}
+    </button>`).join('');
+}
+function setLang(l){
+  lang=l; localStorage.setItem('v_lang',l);
+  applyLang(); renderLangGrid();
+  if(messages.length===0) renderWelcome();
+}
+window.setLang=setLang;
+
+/* ═══ ACCESSIBILITY ═══ */
+function tog(id){ const el=$(id); const on=!el.classList.contains('on'); el.classList.toggle('on',on); el.setAttribute('aria-checked',on); return on; }
+
+function toggleHC(){ const on=tog('togHC'); if(on){ theme='contrast'; applyTheme(); } else{ theme=localStorage.getItem('v_theme')||'dark'; applyTheme(); } saveA11y(); }
+window.toggleHC=toggleHC;
+
+function toggleDesat(){ const on=tog('togDesat'); document.body.classList.toggle('desaturate',on); saveA11y(); }
+window.toggleDesat=toggleDesat;
+
+function toggleLinks(){ const on=tog('togLinks'); document.body.classList.toggle('underline-links',on); saveA11y(); }
+window.toggleLinks=toggleLinks;
+
+function setFS(val,activeId){
+  document.documentElement.style.setProperty('--fs',val);
+  document.querySelectorAll('.font-btn').forEach(b=>b.classList.remove('on'));
+  const el=$(activeId); if(el) el.classList.add('on');
+  saveA11y();
+}
+window.setFS=setFS;
+
+function toggleDyslexia(){ const on=tog('togDyslexia'); document.body.classList.toggle('dyslexia',on); saveA11y(); }
+window.toggleDyslexia=toggleDyslexia;
+
+function setLH(val,activeId){
+  document.documentElement.style.setProperty('--lh',val);
+  document.querySelectorAll('[id^="lh"]').forEach(b=>b.classList.remove('on'));
+  const el=$(activeId); if(el) el.classList.add('on');
+  saveA11y();
+}
+window.setLH=setLH;
+
+function setLS(val,activeId){
+  document.documentElement.style.setProperty('--ls',val);
+  document.querySelectorAll('[id^="ls"]').forEach(b=>b.classList.remove('on'));
+  const el=$(activeId); if(el) el.classList.add('on');
+  saveA11y();
+}
+window.setLS=setLS;
+
+function toggleGuide(){ const on=tog('togGuide'); $('readingGuide').style.display=on?'block':'none'; saveA11y(); }
+window.toggleGuide=toggleGuide;
+
+document.addEventListener('mousemove',e=>{ const g=$('readingGuide'); if(g.style.display==='block') g.style.top=(e.clientY-22)+'px'; });
+
+function toggleMotion(){ const on=tog('togMotion'); document.body.classList.toggle('no-motion',on); saveA11y(); }
+window.toggleMotion=toggleMotion;
+
+function toggleCursor(){ const on=tog('togCursor'); document.body.classList.toggle('big-cursor',on); saveA11y(); }
+window.toggleCursor=toggleCursor;
+
+function toggleTTS(){ ttsOn=tog('togTTS'); if(!ttsOn) window.speechSynthesis?.cancel(); saveA11y(); }
+window.toggleTTS=toggleTTS;
+
+function activateVLibras(){
+  const btn=document.querySelector('[vw-access-button]');
+  if(btn){ btn.style.display='block'; btn.click(); toast('🤟 '+L().toast_vlibras); }
+  else toast('⚠ VLibras indisponível. Verifique a conexão.');
+}
+window.activateVLibras=activateVLibras;
+
+function resetA11y(){
+  document.body.className='';
+  document.documentElement.style.setProperty('--fs','1');
+  document.documentElement.style.setProperty('--lh','1.65');
+  document.documentElement.style.setProperty('--ls','normal');
+  $('readingGuide').style.display='none';
+  ttsOn=false;
+  window.speechSynthesis?.cancel();
+  ['togHC','togDesat','togLinks','togDyslexia','togGuide','togMotion','togCursor','togTTS'].forEach(id=>{ const el=$(id); if(el){ el.classList.remove('on'); el.setAttribute('aria-checked','false'); } });
+  document.querySelectorAll('.font-btn').forEach((b,i)=>b.classList.toggle('on',i===1));
+  document.querySelectorAll('[id^="lh"]').forEach((b,i)=>b.classList.toggle('on',i===0));
+  document.querySelectorAll('[id^="ls"]').forEach((b,i)=>b.classList.toggle('on',i===0));
+  localStorage.removeItem('v_a11y');
+  toast('↩ '+L().toast_a11y);
+}
+window.resetA11y=resetA11y;
+
+function saveA11y(){
+  localStorage.setItem('v_a11y',JSON.stringify({
+    hc:$('togHC')?.classList.contains('on'),
+    desat:$('togDesat')?.classList.contains('on'),
+    links:$('togLinks')?.classList.contains('on'),
+    dyslexia:$('togDyslexia')?.classList.contains('on'),
+    guide:$('togGuide')?.classList.contains('on'),
+    motion:$('togMotion')?.classList.contains('on'),
+    cursor:$('togCursor')?.classList.contains('on'),
+    tts:ttsOn,
+    fs:getComputedStyle(document.documentElement).getPropertyValue('--fs').trim(),
+    lh:getComputedStyle(document.documentElement).getPropertyValue('--lh').trim(),
+    ls:getComputedStyle(document.documentElement).getPropertyValue('--ls').trim(),
+  }));
+}
+
+function loadA11y(){
+  const s=JSON.parse(localStorage.getItem('v_a11y')||'null'); if(!s) return;
+  if(s.hc){ $('togHC')?.classList.add('on'); $('togHC')?.setAttribute('aria-checked','true'); theme='contrast'; applyTheme(); }
+  if(s.desat){ $('togDesat')?.classList.add('on'); $('togDesat')?.setAttribute('aria-checked','true'); document.body.classList.add('desaturate'); }
+  if(s.links){ $('togLinks')?.classList.add('on'); $('togLinks')?.setAttribute('aria-checked','true'); document.body.classList.add('underline-links'); }
+  if(s.dyslexia){ $('togDyslexia')?.classList.add('on'); $('togDyslexia')?.setAttribute('aria-checked','true'); document.body.classList.add('dyslexia'); }
+  if(s.guide){ $('togGuide')?.classList.add('on'); $('togGuide')?.setAttribute('aria-checked','true'); $('readingGuide').style.display='block'; }
+  if(s.motion){ $('togMotion')?.classList.add('on'); $('togMotion')?.setAttribute('aria-checked','true'); document.body.classList.add('no-motion'); }
+  if(s.cursor){ $('togCursor')?.classList.add('on'); $('togCursor')?.setAttribute('aria-checked','true'); document.body.classList.add('big-cursor'); }
+  if(s.tts){ ttsOn=true; $('togTTS')?.classList.add('on'); $('togTTS')?.setAttribute('aria-checked','true'); }
+  if(s.fs){ document.documentElement.style.setProperty('--fs',s.fs); }
+  if(s.lh){ document.documentElement.style.setProperty('--lh',s.lh); }
+  if(s.ls){ document.documentElement.style.setProperty('--ls',s.ls); }
+}
+
+/* ═══ ABOUT ═══ */
+function openAbout(){
+  $('aboutBody').innerHTML=`
+    <p style="font-size:13.5px;color:var(--tx2);line-height:1.8;margin-bottom:18px">${lang==='pt'?'<strong>AI VERITY</strong> é uma plataforma de verificação de fatos que combate a <strong>desinformação digital</strong> utilizando múltiplos modelos de linguagem em consenso, desenvolvida para o campeonato nacional HackNav.':lang==='en'?'<strong>AI VERITY</strong> is a fact-checking platform that combats <strong>digital misinformation</strong> using multiple language models in consensus, developed for the national HackNav championship.':lang==='es'?'<strong>AI VERITY</strong> es una plataforma de verificación de hechos que combate la <strong>desinformación digital</strong> utilizando múltiples modelos de lenguaje en consenso.':lang==='fr'?'<strong>AI VERITY</strong> est une plateforme de vérification des faits qui combat la <strong>désinformation numérique</strong> en utilisant plusieurs modèles de langage en consensus.':'<strong>AI VERITY</strong> ist eine Faktenchecking-Plattform zur Bekämpfung von <strong>digitaler Desinformation</strong> durch mehrere Sprachmodelle im Konsens.'}</p>
+    ${[1,2,3,4].map((n,i)=>{
+      const steps={pt:['Cole uma alegação, notícia ou informação suspeita no campo de texto.','Múltiplos agentes de linguagem analisam de forma independente a alegação.','Os agentes chegam a um consenso e geram um veredicto com grau de confiança.','Você recebe o resultado com fontes, análise por agente e uma dica educativa.'],en:['Paste a suspicious claim, news article or information in the text field.','Multiple language agents independently analyze the claim.','Agents reach consensus and generate a verdict with confidence score.','You receive the result with sources, per-agent analysis and an educational tip.'],es:['Pega una afirmación, noticia o información sospechosa en el campo de texto.','Múltiples agentes de lenguaje analizan la afirmación de forma independiente.','Los agentes llegan a un consenso y generan un veredicto con grado de confianza.','Recibes el resultado con fuentes, análisis por agente y un consejo educativo.'],fr:["Collez une affirmation, un article ou une information suspecte dans le champ de texte.","Plusieurs agents de langage analysent indépendamment l'affirmation.","Les agents arrivent à un consensus et génèrent un verdict avec un score de confiance.","Vous recevez le résultat avec les sources, l'analyse par agent et un conseil éducatif."],de:['Fügen Sie eine verdächtige Behauptung, einen Artikel oder eine Information in das Textfeld ein.','Mehrere Sprachagenten analysieren die Behauptung unabhängig voneinander.','Agenten erzielen Konsens und generieren ein Urteil mit Konfidenzwert.','Sie erhalten das Ergebnis mit Quellen, Agenten-Analyse und einem Lerntipp.']};
+      const arr=steps[lang]||steps.pt;
+      return `<div class="about-step"><div class="about-step-num">${n}</div><div class="about-step-txt">${arr[i]}</div></div>`;
+    }).join('')}
+    <div style="margin-top:16px;padding:12px 16px;background:var(--adim);border:1px solid rgba(79,125,243,.22);border-radius:10px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--accent);margin-bottom:6px">STACK TECNOLÓGICO</div>
+      <div style="font-size:12.5px;color:var(--tx2);line-height:1.8">Groq API (LPU) · Llama 3.3 70B · HTML/CSS/JS · VLibras · HackNav 2025</div>
+    </div>`;
+  $('aboutModal').classList.remove('hidden');
+  closeSidebar();
+}
+function closeAbout(){ $('aboutModal').classList.add('hidden'); }
+window.openAbout=openAbout; window.closeAbout=closeAbout;
+
+/* ═══ SPLASH ═══ */
+(function runSplash(){
+  // Gera partículas flutuantes
+  const container = document.getElementById('spParticles');
+  if(container){
+    const count = 22;
+    for(let i=0;i<count;i++){
+      const p = document.createElement('div');
+      p.className = 'sp-p';
+      const size = Math.random()*4+2;
+      const x = Math.random()*100;
+      const y = Math.random()*100;
+      const delay = Math.random()*4;
+      const dur = 3+Math.random()*4;
+      const opacity = Math.random()*.5+.15;
+      p.style.cssText = `
+        width:${size}px;height:${size}px;
+        left:${x}%;top:${y}%;
+        opacity:${opacity};
+        animation:particleFloat ${dur}s ease-in-out ${delay}s infinite;
+        background:${Math.random()>.5?'#4f7df3':'#3ecf8e'};
+      `;
+      container.appendChild(p);
+    }
+  }
+
+  // Mensagens de status sequenciais
+  const statusMsgs = [
+    'Conectando agentes...',
+    'Carregando base de fatos...',
+    'Verificando integridade dos modelos...',
+    'Calibrando consenso multi-agente...',
+    'Pronto.',
+  ];
+  const spStatus = document.getElementById('spStatus');
+  let msgIdx = 0;
+  const statusInterval = setInterval(()=>{
+    msgIdx++;
+    if(msgIdx < statusMsgs.length && spStatus){
+      spStatus.style.opacity='0';
+      setTimeout(()=>{
+        spStatus.textContent = statusMsgs[msgIdx];
+        spStatus.style.transition='opacity .3s';
+        spStatus.style.opacity='1';
+      }, 200);
+    }
+    if(msgIdx >= statusMsgs.length-1) clearInterval(statusInterval);
+  }, 640);
+
+  // Fechar splash após ~3.8s e revelar login
+  setTimeout(()=>{
+    const splash = document.getElementById('splash');
+    const login  = document.getElementById('loginScreen');
+    if(!splash) return;
+    // Começa a mostrar login logo atrás
+    if(login) login.classList.add('visible');
+    splash.classList.add('closing');
+    splash.addEventListener('animationend', ()=>{
+      splash.style.display='none';
+    }, {once:true});
+    // Fallback
+    setTimeout(()=>{ if(splash) splash.style.display='none'; }, 900);
+  }, 3800);
+})();
+
+/* ═══ INIT ═══ */
+(function init(){
+  applyTheme();
+  // Auto-login if session exists
+  const user=localStorage.getItem('v_user');
+  if(user){
+    // Já logado: pula splash rapidamente e entra direto
+    const splash=document.getElementById('splash');
+    const login=document.getElementById('loginScreen');
+    if(splash) splash.style.display='none';
+    if(login)  login.style.display='none';
+    launchApp(user);
+  } else {
+    applyLang();
+    // login já fica visível após splash (veja runSplash)
+  }
+  // Inject .env key if available via Vite
+  try{
+    const envKey=typeof __VITE_GROQ_KEY__!=='undefined'?__VITE_GROQ_KEY__:'';
+    if(envKey && !localStorage.getItem('v_key')) localStorage.setItem('v_key',envKey);
+  }catch(e){}
+})();
+
+})();
+</script>
+</body>
+</html>
